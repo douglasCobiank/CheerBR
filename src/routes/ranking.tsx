@@ -34,7 +34,7 @@ function RankingPage() {
     <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="font-display text-5xl">Ranking Cheer PR</h1>
+          <h1 className="font-display text-5xl">Ranking Cheer BR</h1>
           <p className="max-w-xl text-sm text-muted-foreground">
             Score calculado a partir de nível técnico, status, programa, presença digital e
             categoria — inspirado no overall da FIFA.
