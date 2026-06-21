@@ -40,16 +40,13 @@ namespace Cheer.Domain.Entities
                 double importanciaPts = ScoreConstants.ImportanceWeights.GetValueOrDefault(
                     r.Importancia, ScoreConstants.DefaultImportanceWeight);
 
-                double nivelPts = ScoreConstants.LevelWeights.GetValueOrDefault(
-                    r.Nivel, ScoreConstants.DefaultLevelWeight);
-
                 double categoriaPts = ScoreConstants.CategoryWeights.GetValueOrDefault(
                     r.TipoCategoria, ScoreConstants.DefaultCategoryWeight);
 
                 int diffAnos = Math.Max(0, currentYear - r.Ano);
                 double pesoAno = Math.Max(ScoreConstants.MinDecay, 1.0 - diffAnos * ScoreConstants.YearDecayRate);
 
-                totalScore += colocacaoPts * importanciaPts * nivelPts * categoriaPts * pesoAno;
+                totalScore += colocacaoPts * importanciaPts * categoriaPts * pesoAno;
             }
 
             Score = (int)Math.Round(totalScore);

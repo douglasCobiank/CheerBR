@@ -39,8 +39,16 @@ public static class ScoreConstants
     {
         { "Team Cheer", 1.5 },
         { "Categoria de Grupo", 1.2 },
+        { "Coed", 1.2 },
+        { "All Girl", 1.2 },
+        { "All Boy", 1.2 },
+        { "Elite", 1.2 },
         { "Partner / Duplas", 1.1 },
         { "Skills Individuais", 0.9 },
+        { "Best Jump", 0.9 },
+        { "Best Tumbling", 0.9 },
+        { "Best Basket", 0.9 },
+        { "Best Cheer", 0.9 },
     };
 
     public const double DefaultCategoryWeight = 1.0;

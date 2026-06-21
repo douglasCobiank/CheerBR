@@ -13,8 +13,16 @@ export const IMPORTANCIAS = [
 export const TIPOS_CATEGORIA = [
   "Team Cheer",
   "Categoria de Grupo",
+  "Coed",
+  "All Girl",
+  "All Boy",
+  "Elite",
   "Partner / Duplas",
   "Skills Individuais",
+  "Best Jump",
+  "Best Tumbling",
+  "Best Basket",
+  "Best Cheer",
 ] as const;
 
 export const NIVEL_MAX = 5;

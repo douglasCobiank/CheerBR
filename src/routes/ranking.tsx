@@ -92,9 +92,9 @@ function RankingPage() {
           resultado é calculado com a fórmula:
         </p>
         <div className="mt-3 rounded-lg bg-secondary/40 px-4 py-3 font-mono text-xs leading-relaxed text-muted-foreground">
-          pontos = colocacao × importancia × nivel × tipo_categoria × peso_ano
+          pontos = colocacao × importancia × tipo_categoria × peso_ano
         </div>
-        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <div>
             <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               Colocação
@@ -159,35 +159,6 @@ function RankingPage() {
           </div>
           <div>
             <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Nível
-            </h3>
-            <table className="mt-1 w-full text-xs">
-              <tbody>
-                <tr>
-                  <td className="pr-3 text-muted-foreground">Nível 1</td>
-                  <td>×1.1</td>
-                </tr>
-                <tr>
-                  <td className="pr-3 text-muted-foreground">Nível 2</td>
-                  <td>×1.2</td>
-                </tr>
-                <tr>
-                  <td className="pr-3 text-muted-foreground">Nível 3</td>
-                  <td>×1.3</td>
-                </tr>
-                <tr>
-                  <td className="pr-3 text-muted-foreground">Nível 4</td>
-                  <td>×1.4</td>
-                </tr>
-                <tr>
-                  <td className="pr-3 text-muted-foreground">Nível 5</td>
-                  <td>×1.5</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div>
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               Tipo de Categoria
             </h3>
             <table className="mt-1 w-full text-xs">
@@ -197,15 +168,17 @@ function RankingPage() {
                   <td>×1.5</td>
                 </tr>
                 <tr>
-                  <td className="pr-3 text-muted-foreground">Grupo</td>
+                  <td className="pr-3 text-muted-foreground">Coed / All Girl / All Boy / Elite</td>
                   <td>×1.2</td>
                 </tr>
                 <tr>
-                  <td className="pr-3 text-muted-foreground">Partner/Duplas</td>
+                  <td className="pr-3 text-muted-foreground">Partner / Duplas</td>
                   <td>×1.1</td>
                 </tr>
                 <tr>
-                  <td className="pr-3 text-muted-foreground">Skills Individuais</td>
+                  <td className="pr-3 text-muted-foreground">
+                    Best Jump / Tumbling / Basket / Cheer
+                  </td>
                   <td>×0.9</td>
                 </tr>
               </tbody>
