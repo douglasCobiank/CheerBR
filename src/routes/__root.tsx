@@ -95,6 +95,12 @@ function RootShell({ children }: { children: ReactNode }) {
       </head>
       <body>
         {children}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "window.$RefreshReg$ = window.$RefreshReg$ || (() => {}); window.$RefreshSig$ = window.$RefreshSig$ || (() => (t) => t);",
+          }}
+        />
         <Scripts />
       </body>
     </html>
