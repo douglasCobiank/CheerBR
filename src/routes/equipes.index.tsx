@@ -5,15 +5,6 @@ import { TeamCard } from "@/components/team-card";
 import { Plus, Search, X } from "lucide-react";
 
 export const Route = createFileRoute("/equipes/")({
-  head: () => ({
-    meta: [
-      { title: "Equipes — Cheer PR" },
-      {
-        name: "description",
-        content: "Cadastre e explore todas as equipes de cheerleading do Paraná.",
-      },
-    ],
-  }),
   component: EquipesPage,
 });
 
@@ -33,6 +24,7 @@ function EquipesPage() {
         [t.nome, t.cidade, t.coach, t.programa]
           .filter(Boolean)
           .some((v) => v!.toLowerCase().includes(q.toLowerCase()));
+
       const matchC = !cat || t.categoria === cat;
       return matchQ && matchC;
     });
@@ -47,46 +39,52 @@ function EquipesPage() {
             {filtered.length} de {teams.length} equipes
           </p>
         </div>
+
         <button
           onClick={() => setOpen(true)}
-          className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-glow)] hover:opacity-90"
+          className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90"
         >
           <Plus className="h-4 w-4" /> Nova equipe
         </button>
       </div>
 
+      {/* filtros */}
       <div className="mt-6 flex flex-wrap gap-3">
         <div className="relative flex-1 min-w-[220px]">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <input
+            name="search"
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="Buscar por nome, cidade, coach…"
-            className="w-full rounded-full border border-border bg-input/60 py-2.5 pl-10 pr-4 text-sm outline-none focus:border-primary"
+            placeholder="Buscar..."
+            className="w-full rounded-full border px-4 py-2.5 pl-10 text-sm"
           />
         </div>
+
         <select
+          name="categoria"
           value={cat}
           onChange={(e) => setCat(e.target.value)}
-          className="rounded-full border border-border bg-input/60 px-4 py-2.5 text-sm outline-none focus:border-primary"
+          className="rounded-full border px-4 py-2.5 text-sm"
         >
-          <option value="">Todas as categorias</option>
+          <option value="">Todas</option>
           {CATEGORIAS.map((c) => (
-            <option key={c} value={c}>{c}</option>
+            <option key={c}>{c}</option>
           ))}
         </select>
       </div>
 
+      {/* lista */}
       <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {filtered.map((t) => (
-          <div key={t.id} className="relative">
+          <div key={t.id} className="relative group">
             <TeamCard team={t} />
+
             <button
               onClick={() => {
                 if (confirm(`Remover ${t.nome}?`)) removeTeam(t.id);
               }}
-              className="absolute right-3 top-3 rounded-full bg-background/60 p-1.5 text-muted-foreground opacity-0 transition group-hover:opacity-100 hover:text-destructive"
-              aria-label="Remover"
+              className="absolute right-3 top-3 rounded-full bg-background/60 p-1.5 text-muted-foreground opacity-0 transition group-hover:opacity-100 hover:text-red-500"
             >
               <X className="h-3.5 w-3.5" />
             </button>
@@ -97,8 +95,8 @@ function EquipesPage() {
       {open && (
         <AddTeamDialog
           onClose={() => setOpen(false)}
-          onSubmit={(t) => {
-            addTeam(t);
+          onSubmit={async (data) => {
+            await addTeam(data);
             setOpen(false);
           }}
         />
@@ -107,43 +105,67 @@ function EquipesPage() {
   );
 }
 
-type FormState = Omit<Team, "id" | "score">;
+/* =========================
+   FORM TYPE (CORRIGIDO)
+   ========================= */
+
+type FormState = {
+  nome: string;
+  programa: string;
+  nivel: number;
+  cidade: string;
+  estado: string;
+  categoria: string;
+  instagram: string;
+  facebook: string;
+  coach: string;
+  fundacao: string;
+  status: string;
+  logoUrl: string | null;
+};
+
+/* =========================
+   MODAL
+   ========================= */
 
 function AddTeamDialog({
   onClose,
   onSubmit,
 }: {
   onClose: () => void;
-  onSubmit: (t: FormState) => void;
+  onSubmit: (t: any) => void;
 }) {
   const [form, setForm] = useState<FormState>({
-  logoUrl: null,  
-  nome: "",
-  programa: null,
-  nivel: 2,
-  cidade: "",
-  estado: "PR",
-  categoria: "Universitário",
-  instagram: null,
-  facebook: null,
-  coach: null,
-  fundacao: null,
-  status: "Ativo",
-});
+    logoUrl: null,
+    nome: "",
+    programa: "",
+    nivel: 2,
+    cidade: "",
+    estado: "PR",
+    categoria: "Universitário",
+    instagram: "",
+    facebook: "",
+    coach: "",
+    fundacao: "",
+    status: "Ativo",
+  });
 
   const set = <K extends keyof FormState>(k: K, v: FormState[K]) =>
     setForm((f) => ({ ...f, [k]: v }));
 
   return (
     <div
-      className="fixed inset-0 z-50 grid place-items-center bg-background/80 p-4 backdrop-blur"
+      className="fixed inset-0 z-50 grid place-items-center bg-black/40"
       onClick={onClose}
     >
       <form
         onClick={(e) => e.stopPropagation()}
         onSubmit={(e) => {
           e.preventDefault();
+
           if (!form.nome || !form.cidade) return;
+
+          // 🔥 CONVERSÃO LIMPA PRA API
           onSubmit({
             ...form,
             programa: form.programa || null,
@@ -153,81 +175,85 @@ function AddTeamDialog({
             fundacao: form.fundacao || null,
           });
         }}
-        className="w-full max-w-xl rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-card)]"
+        className="w-full max-w-xl rounded-2xl bg-white p-6"
       >
-        <div className="flex items-center justify-between">
-          <h2 className="font-display text-3xl">Nova equipe</h2>
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-full p-1.5 text-muted-foreground hover:bg-secondary"
-          >
-            <X className="h-4 w-4" />
-          </button>
-        </div>
+        <h2 className="text-xl font-bold mb-4">Nova equipe</h2>
 
-        <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
-          <Field label="Nome *">
-            <input required value={form.nome} onChange={(e) => set("nome", e.target.value)} className={input} />
+        <div className="grid grid-cols-2 gap-3">
+          <Field label="Nome">
+            <input
+              name="nome"
+              value={form.nome}
+              onChange={(e) => set("nome", e.target.value)}
+            />
           </Field>
-          <Field label="Programa / Ginásio">
-            <input value={form.programa ?? ""} onChange={(e) => set("programa", e.target.value)} className={input} />
+
+          <Field label="Cidade">
+            <input
+              name="cidade"
+              value={form.cidade}
+              onChange={(e) => set("cidade", e.target.value)}
+            />
           </Field>
-          <Field label="Cidade *">
-            <input required value={form.cidade} onChange={(e) => set("cidade", e.target.value)} className={input} />
+
+          <Field label="Programa">
+            <input
+              name="programa"
+              value={form.programa}
+              onChange={(e) => set("programa", e.target.value)}
+            />
           </Field>
-          <Field label="Estado">
-            <input value={form.estado} onChange={(e) => set("estado", e.target.value)} className={input} />
-          </Field>
-          <Field label="Categoria">
-            <select value={form.categoria} onChange={(e) => set("categoria", e.target.value)} className={input}>
-              {CATEGORIAS.map((c) => <option key={c}>{c}</option>)}
-            </select>
-          </Field>
-          <Field label="Nível (1-6)">
-            <input type="number" min={1} max={6} value={form.nivel ?? ""} onChange={(e) => set("nivel", e.target.value ? Number(e.target.value) : null)} className={input} />
-          </Field>
+
           <Field label="Coach">
-            <input value={form.coach ?? ""} onChange={(e) => set("coach", e.target.value)} className={input} />
+            <input
+              name="coach"
+              value={form.coach}
+              onChange={(e) => set("coach", e.target.value)}
+            />
           </Field>
-          <Field label="Status">
-            <select value={form.status} onChange={(e) => set("status", e.target.value)} className={input}>
-              {STATUSES.map((s) => <option key={s}>{s}</option>)}
-            </select>
-          </Field>
+
           <Field label="Instagram">
-            <input placeholder="@equipe" value={form.instagram ?? ""} onChange={(e) => set("instagram", e.target.value)} className={input} />
+            <input
+              name="instagram"
+              value={form.instagram}
+              onChange={(e) => set("instagram", e.target.value)}
+            />
           </Field>
+
           <Field label="Facebook">
-            <input value={form.facebook ?? ""} onChange={(e) => set("facebook", e.target.value)} className={input} />
-          </Field>
-          <Field label="Ano de fundação">
-            <input value={form.fundacao ?? ""} onChange={(e) => set("fundacao", e.target.value)} className={input} />
+            <input
+              name="facebook"
+              value={form.facebook}
+              onChange={(e) => set("facebook", e.target.value)}
+            />
           </Field>
         </div>
 
-        <div className="mt-6 flex justify-end gap-2">
-          <button type="button" onClick={onClose} className="rounded-full px-5 py-2.5 text-sm text-muted-foreground hover:bg-secondary">
+        <div className="flex justify-end gap-2 mt-4">
+          <button type="button" onClick={onClose}>
             Cancelar
           </button>
-          <button type="submit" className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90">
-            Cadastrar
-          </button>
+          <button type="submit">Salvar</button>
         </div>
       </form>
     </div>
   );
 }
 
-const input =
-  "w-full rounded-lg border border-border bg-input/60 px-3 py-2 text-sm outline-none focus:border-primary";
+/* =========================
+   FIELD
+   ========================= */
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
   return (
-    <label className="block">
-      <span className="mb-1 block text-xs uppercase tracking-wider text-muted-foreground">
-        {label}
-      </span>
+    <label className="flex flex-col gap-1 text-sm">
+      <span>{label}</span>
       {children}
     </label>
   );
