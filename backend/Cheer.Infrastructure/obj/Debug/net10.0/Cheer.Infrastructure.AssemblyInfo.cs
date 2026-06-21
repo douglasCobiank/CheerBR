@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Cheer.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+87fa153cae1afa572eacc741d16d1b1a542e07a6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d6c9d61fef9f3b3cf9a7da651c7c1e3db7b677d0")]
 [assembly: System.Reflection.AssemblyProductAttribute("Cheer.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Cheer.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
