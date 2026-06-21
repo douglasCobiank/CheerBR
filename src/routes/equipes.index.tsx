@@ -1,15 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { useTeams, type Team } from "@/lib/teams-store";
+import { useTeams } from "@/lib/teams-store";
 import { TeamCard } from "@/components/team-card";
+import { AddTeamDialog } from "@/components/add-team-dialog";
 import { Plus, Search, X } from "lucide-react";
+import { CATEGORIAS } from "@/lib/constants";
 
 export const Route = createFileRoute("/equipes/")({
   component: EquipesPage,
 });
-
-const CATEGORIAS = ["Universitário", "All star", "Escolar", "Outro"];
-const STATUSES = ["Ativo", "Inativo", "Desconhecido"];
 
 function EquipesPage() {
   const { teams = [], addTeam, removeTeam } = useTeams();
@@ -48,9 +47,8 @@ function EquipesPage() {
         </button>
       </div>
 
-      {/* filtros */}
       <div className="mt-6 flex flex-wrap gap-3">
-        <div className="relative flex-1 min-w-[220px]">
+        <div className="relative min-w-[220px] flex-1">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <input
             name="search"
@@ -74,10 +72,9 @@ function EquipesPage() {
         </select>
       </div>
 
-      {/* lista */}
       <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {filtered.map((t) => (
-          <div key={t.id} className="relative group">
+          <div key={t.id} className="group relative">
             <TeamCard team={t} />
 
             <button
@@ -102,159 +99,5 @@ function EquipesPage() {
         />
       )}
     </main>
-  );
-}
-
-/* =========================
-   FORM TYPE (CORRIGIDO)
-   ========================= */
-
-type FormState = {
-  nome: string;
-  programa: string;
-  nivel: number;
-  cidade: string;
-  estado: string;
-  categoria: string;
-  instagram: string;
-  facebook: string;
-  coach: string;
-  fundacao: string;
-  status: string;
-  logoUrl: string | null;
-};
-
-/* =========================
-   MODAL
-   ========================= */
-
-function AddTeamDialog({
-  onClose,
-  onSubmit,
-}: {
-  onClose: () => void;
-  onSubmit: (t: any) => void;
-}) {
-  const [form, setForm] = useState<FormState>({
-    logoUrl: null,
-    nome: "",
-    programa: "",
-    nivel: 2,
-    cidade: "",
-    estado: "PR",
-    categoria: "Universitário",
-    instagram: "",
-    facebook: "",
-    coach: "",
-    fundacao: "",
-    status: "Ativo",
-  });
-
-  const set = <K extends keyof FormState>(k: K, v: FormState[K]) =>
-    setForm((f) => ({ ...f, [k]: v }));
-
-  return (
-    <div
-      className="fixed inset-0 z-50 grid place-items-center bg-black/40"
-      onClick={onClose}
-    >
-      <form
-        onClick={(e) => e.stopPropagation()}
-        onSubmit={(e) => {
-          e.preventDefault();
-
-          if (!form.nome || !form.cidade) return;
-
-          // 🔥 CONVERSÃO LIMPA PRA API
-          onSubmit({
-            ...form,
-            programa: form.programa || null,
-            coach: form.coach || null,
-            instagram: form.instagram || null,
-            facebook: form.facebook || null,
-            fundacao: form.fundacao || null,
-          });
-        }}
-        className="w-full max-w-xl rounded-2xl bg-white p-6"
-      >
-        <h2 className="text-xl font-bold mb-4">Nova equipe</h2>
-
-        <div className="grid grid-cols-2 gap-3">
-          <Field label="Nome">
-            <input
-              name="nome"
-              value={form.nome}
-              onChange={(e) => set("nome", e.target.value)}
-            />
-          </Field>
-
-          <Field label="Cidade">
-            <input
-              name="cidade"
-              value={form.cidade}
-              onChange={(e) => set("cidade", e.target.value)}
-            />
-          </Field>
-
-          <Field label="Programa">
-            <input
-              name="programa"
-              value={form.programa}
-              onChange={(e) => set("programa", e.target.value)}
-            />
-          </Field>
-
-          <Field label="Coach">
-            <input
-              name="coach"
-              value={form.coach}
-              onChange={(e) => set("coach", e.target.value)}
-            />
-          </Field>
-
-          <Field label="Instagram">
-            <input
-              name="instagram"
-              value={form.instagram}
-              onChange={(e) => set("instagram", e.target.value)}
-            />
-          </Field>
-
-          <Field label="Facebook">
-            <input
-              name="facebook"
-              value={form.facebook}
-              onChange={(e) => set("facebook", e.target.value)}
-            />
-          </Field>
-        </div>
-
-        <div className="flex justify-end gap-2 mt-4">
-          <button type="button" onClick={onClose}>
-            Cancelar
-          </button>
-          <button type="submit">Salvar</button>
-        </div>
-      </form>
-    </div>
-  );
-}
-
-/* =========================
-   FIELD
-   ========================= */
-
-function Field({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <label className="flex flex-col gap-1 text-sm">
-      <span>{label}</span>
-      {children}
-    </label>
   );
 }

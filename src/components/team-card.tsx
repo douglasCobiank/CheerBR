@@ -1,4 +1,4 @@
-import type { Team } from "@/lib/teams-store";
+import type { Team } from "@/lib/types";
 import { Instagram, Facebook, MapPin, User } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 
@@ -20,13 +20,15 @@ export function TeamCard({ team, rank }: { team: Team; rank?: number }) {
         aria-label={`Ver detalhes de ${team.nome}`}
       />
       {rank !== undefined && (
-        <div className="absolute right-4 top-4 font-display text-4xl text-primary/70">
-          #{rank}
-        </div>
+        <div className="absolute right-4 top-4 font-display text-4xl text-primary/70">#{rank}</div>
       )}
       <div className="flex items-start gap-3">
         {team.logoUrl ? (
-          <img src={team.logoUrl} alt={team.nome} className="h-12 w-12 shrink-0 rounded-xl object-cover border border-border" />
+          <img
+            src={team.logoUrl}
+            alt={team.nome}
+            className="h-12 w-12 shrink-0 rounded-xl object-cover border border-border"
+          />
         ) : (
           <span
             className={`grid h-12 w-12 shrink-0 place-items-center rounded-xl font-display text-xl ${tierColor(team.nivel)}`}
@@ -39,9 +41,7 @@ export function TeamCard({ team, rank }: { team: Team; rank?: number }) {
             {team.nome}
           </h3>
           {team.programa && (
-            <p className="truncate text-xs text-muted-foreground">
-              {team.programa}
-            </p>
+            <p className="truncate text-xs text-muted-foreground">{team.programa}</p>
           )}
         </div>
       </div>
@@ -73,9 +73,7 @@ export function TeamCard({ team, rank }: { team: Team; rank?: number }) {
         >
           {team.status}
         </span>
-        <span className="ml-auto font-display text-lg text-primary">
-          {team.score}
-        </span>
+        <span className="ml-auto font-display text-lg text-primary">{team.score}</span>
       </div>
 
       {(team.instagram || team.facebook) && (

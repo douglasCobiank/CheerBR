@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useTeams } from "@/lib/teams-store";
 import { Trophy, Medal, Award } from "lucide-react";
+import { CATEGORIAS } from "@/lib/constants";
 
 export const Route = createFileRoute("/ranking")({
   head: () => ({
@@ -35,8 +36,8 @@ function RankingPage() {
         <div>
           <h1 className="font-display text-5xl">Ranking Cheer PR</h1>
           <p className="max-w-xl text-sm text-muted-foreground">
-            Score calculado a partir de nível técnico, status, programa, presença
-            digital e categoria — inspirado no overall da FIFA.
+            Score calculado a partir de nível técnico, status, programa, presença digital e
+            categoria — inspirado no overall da FIFA.
           </p>
         </div>
         <select
@@ -45,9 +46,9 @@ function RankingPage() {
           className="rounded-full border border-border bg-input/60 px-4 py-2.5 text-sm outline-none focus:border-primary"
         >
           <option value="">Todas as categorias</option>
-          <option>Universitário</option>
-          <option>All star</option>
-          <option>Escolar</option>
+          {CATEGORIAS.filter((c) => c !== "Outro").map((c) => (
+            <option key={c}>{c}</option>
+          ))}
         </select>
       </div>
 
@@ -99,13 +100,9 @@ function RankingPage() {
           <tbody>
             {rest.map((t, i) => (
               <tr key={t.id} className="border-t border-border/60 transition hover:bg-secondary/40">
-                <td className="px-4 py-3 font-display text-lg text-muted-foreground">
-                  {i + 4}
-                </td>
+                <td className="px-4 py-3 font-display text-lg text-muted-foreground">{i + 4}</td>
                 <td className="px-4 py-3 font-medium">{t.nome}</td>
-                <td className="px-4 py-3 text-muted-foreground hidden md:table-cell">
-                  {t.cidade}
-                </td>
+                <td className="px-4 py-3 text-muted-foreground hidden md:table-cell">{t.cidade}</td>
                 <td className="px-4 py-3 hidden sm:table-cell">
                   <span className="rounded-full bg-secondary px-2 py-0.5 text-[10px] uppercase tracking-wider">
                     {t.categoria}

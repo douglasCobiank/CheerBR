@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
+import { Field } from "@/components/ui/field";
+import { Modal } from "@/components/modal";
+import { INPUT_CLASS, CATEGORIAS } from "@/lib/constants";
 
 const schema = z.object({
   nome: z.string().min(2),
@@ -8,11 +11,12 @@ const schema = z.object({
   nivel: z.number().min(1).max(6),
   categoria: z.string(),
   estado: z.string(),
-  programa: z.string().nullable().optional(),
-  coach: z.string().nullable().optional(),
-  instagram: z.string().nullable().optional(),
-  facebook: z.string().nullable().optional(),
-  fundacao: z.string().nullable().optional(),
+  programa: z.string().nullable(),
+  coach: z.string().nullable(),
+  instagram: z.string().nullable(),
+  facebook: z.string().nullable(),
+  fundacao: z.string().nullable(),
+  logoUrl: z.string().nullable(),
   status: z.string(),
 });
 
@@ -38,12 +42,13 @@ export function AddTeamDialog({
     instagram: null,
     facebook: null,
     fundacao: null,
+    logoUrl: null,
     status: "Ativo",
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const set = (k: keyof FormData, v: any) =>
+  const set = <K extends keyof FormData>(k: K, v: FormData[K]) =>
     setForm((f) => ({ ...f, [k]: v }));
 
   async function handleSubmit(e: React.FormEvent) {
@@ -72,12 +77,8 @@ export function AddTeamDialog({
   }
 
   return (
-    <div
-      className="fixed inset-0 z-50 grid place-items-center bg-background/80 p-4 backdrop-blur"
-      onClick={onClose}
-    >
+    <Modal open onClose={onClose}>
       <form
-        onClick={(e) => e.stopPropagation()}
         onSubmit={handleSubmit}
         className="w-full max-w-xl rounded-2xl border border-border bg-card p-6"
       >
@@ -86,7 +87,7 @@ export function AddTeamDialog({
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           <Field label="Nome" error={errors.nome}>
             <input
-              className={input}
+              className={INPUT_CLASS}
               value={form.nome}
               onChange={(e) => set("nome", e.target.value)}
             />
@@ -94,7 +95,7 @@ export function AddTeamDialog({
 
           <Field label="Cidade" error={errors.cidade}>
             <input
-              className={input}
+              className={INPUT_CLASS}
               value={form.cidade}
               onChange={(e) => set("cidade", e.target.value)}
             />
@@ -103,7 +104,7 @@ export function AddTeamDialog({
           <Field label="Nível">
             <input
               type="number"
-              className={input}
+              className={INPUT_CLASS}
               value={form.nivel}
               onChange={(e) => set("nivel", Number(e.target.value))}
             />
@@ -111,14 +112,13 @@ export function AddTeamDialog({
 
           <Field label="Categoria">
             <select
-              className={input}
+              className={INPUT_CLASS}
               value={form.categoria}
               onChange={(e) => set("categoria", e.target.value)}
             >
-              <option>Universitário</option>
-              <option>All star</option>
-              <option>Escolar</option>
-              <option>Outro</option>
+              {CATEGORIAS.map((c) => (
+                <option key={c}>{c}</option>
+              ))}
             </select>
           </Field>
         </div>
@@ -140,29 +140,6 @@ export function AddTeamDialog({
           </button>
         </div>
       </form>
-    </div>
+    </Modal>
   );
 }
-
-function Field({
-  label,
-  error,
-  children,
-}: {
-  label: string;
-  error?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <label className="block">
-      <span className="text-xs uppercase text-muted-foreground">
-        {label}
-      </span>
-      {children}
-      {error && <p className="text-xs text-red-400 mt-1">{error}</p>}
-    </label>
-  );
-}
-
-const input =
-  "w-full rounded-lg border border-border bg-input/60 px-3 py-2 text-sm outline-none focus:border-primary";

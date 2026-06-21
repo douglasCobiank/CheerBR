@@ -41,15 +41,15 @@ if (t.Categoria == "All star")          score += 90;
 
 ## Endpoints
 
-| Método | Rota                              | Descrição                                     |
-|--------|-----------------------------------|-----------------------------------------------|
-| GET    | `/api/teams`                      | Lista equipes (query: `?categoria=&cidade=&q=`) |
-| GET    | `/api/teams/{id}`                 | Detalhe                                       |
-| POST   | `/api/teams`                      | Cria equipe (recalcula score)                 |
-| PUT    | `/api/teams/{id}`                 | Atualiza                                      |
-| DELETE | `/api/teams/{id}`                 | Remove                                        |
-| GET    | `/api/ranking?categoria=`         | Equipes ordenadas por score desc              |
-| GET    | `/api/stats/overview`             | Totais, médias, top cidades, contagens        |
+| Método | Rota                      | Descrição                                       |
+| ------ | ------------------------- | ----------------------------------------------- |
+| GET    | `/api/teams`              | Lista equipes (query: `?categoria=&cidade=&q=`) |
+| GET    | `/api/teams/{id}`         | Detalhe                                         |
+| POST   | `/api/teams`              | Cria equipe (recalcula score)                   |
+| PUT    | `/api/teams/{id}`         | Atualiza                                        |
+| DELETE | `/api/teams/{id}`         | Remove                                          |
+| GET    | `/api/ranking?categoria=` | Equipes ordenadas por score desc                |
+| GET    | `/api/stats/overview`     | Totais, médias, top cidades, contagens          |
 
 ### Exemplo de resposta `/api/stats/overview`
 
@@ -59,10 +59,10 @@ if (t.Categoria == "All star")          score += 90;
   "ativos": 32,
   "cidades": 17,
   "scoreMedio": 1340,
-  "porStatus": [{"name":"Ativo","value":32}],
-  "porCategoria": [{"name":"All star","value":40}],
-  "porCidade": [{"name":"Curitiba","value":35}],
-  "porNivel": [{"name":"Nível 2","value":18}]
+  "porStatus": [{ "name": "Ativo", "value": 32 }],
+  "porCategoria": [{ "name": "All star", "value": 40 }],
+  "porCidade": [{ "name": "Curitiba", "value": 35 }],
+  "porNivel": [{ "name": "Nível 2", "value": 18 }]
 }
 ```
 

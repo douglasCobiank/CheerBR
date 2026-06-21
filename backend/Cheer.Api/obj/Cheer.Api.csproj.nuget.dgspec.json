@@ -13,12 +13,8 @@
         "packagesPath": "/Users/douglascobiank/.nuget/packages/",
         "outputPath": "/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Api/obj/",
         "projectStyle": "PackageReference",
-        "configFilePaths": [
-          "/Users/douglascobiank/.nuget/NuGet/NuGet.Config"
-        ],
-        "originalTargetFrameworks": [
-          "net10.0"
-        ],
+        "configFilePaths": ["/Users/douglascobiank/.nuget/NuGet/NuGet.Config"],
+        "originalTargetFrameworks": ["net10.0"],
         "sources": {
           "https://api.nuget.org/v3/index.json": {}
         },
@@ -37,9 +33,7 @@
           }
         },
         "warningProperties": {
-          "warnAsError": [
-            "NU1605"
-          ]
+          "warnAsError": ["NU1605"]
         },
         "restoreAuditProperties": {
           "enableAudit": "true",
@@ -72,15 +66,7 @@
               "version": "[10.2.1, )"
             }
           },
-          "imports": [
-            "net461",
-            "net462",
-            "net47",
-            "net471",
-            "net472",
-            "net48",
-            "net481"
-          ],
+          "imports": ["net461", "net462", "net47", "net471", "net472", "net48", "net481"],
           "assetTargetFallback": true,
           "warn": true,
           "frameworkReferences": {
@@ -518,12 +504,8 @@
         "packagesPath": "/Users/douglascobiank/.nuget/packages/",
         "outputPath": "/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Application/obj/",
         "projectStyle": "PackageReference",
-        "configFilePaths": [
-          "/Users/douglascobiank/.nuget/NuGet/NuGet.Config"
-        ],
-        "originalTargetFrameworks": [
-          "net10.0"
-        ],
+        "configFilePaths": ["/Users/douglascobiank/.nuget/NuGet/NuGet.Config"],
+        "originalTargetFrameworks": ["net10.0"],
         "sources": {
           "https://api.nuget.org/v3/index.json": {}
         },
@@ -539,9 +521,7 @@
           }
         },
         "warningProperties": {
-          "warnAsError": [
-            "NU1605"
-          ]
+          "warnAsError": ["NU1605"]
         },
         "restoreAuditProperties": {
           "enableAudit": "true",
@@ -554,15 +534,7 @@
         "net10.0": {
           "framework": "net10.0",
           "targetAlias": "net10.0",
-          "imports": [
-            "net461",
-            "net462",
-            "net47",
-            "net471",
-            "net472",
-            "net48",
-            "net481"
-          ],
+          "imports": ["net461", "net462", "net47", "net471", "net472", "net48", "net481"],
           "assetTargetFallback": true,
           "warn": true,
           "frameworkReferences": {
@@ -857,12 +829,8 @@
         "packagesPath": "/Users/douglascobiank/.nuget/packages/",
         "outputPath": "/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Domain/obj/",
         "projectStyle": "PackageReference",
-        "configFilePaths": [
-          "/Users/douglascobiank/.nuget/NuGet/NuGet.Config"
-        ],
-        "originalTargetFrameworks": [
-          "net10.0"
-        ],
+        "configFilePaths": ["/Users/douglascobiank/.nuget/NuGet/NuGet.Config"],
+        "originalTargetFrameworks": ["net10.0"],
         "sources": {
           "https://api.nuget.org/v3/index.json": {}
         },
@@ -874,9 +842,7 @@
           }
         },
         "warningProperties": {
-          "warnAsError": [
-            "NU1605"
-          ]
+          "warnAsError": ["NU1605"]
         },
         "restoreAuditProperties": {
           "enableAudit": "true",
@@ -889,15 +855,7 @@
         "net10.0": {
           "framework": "net10.0",
           "targetAlias": "net10.0",
-          "imports": [
-            "net461",
-            "net462",
-            "net47",
-            "net471",
-            "net472",
-            "net48",
-            "net481"
-          ],
+          "imports": ["net461", "net462", "net47", "net471", "net472", "net48", "net481"],
           "assetTargetFallback": true,
           "warn": true,
           "frameworkReferences": {
@@ -1192,12 +1150,8 @@
         "packagesPath": "/Users/douglascobiank/.nuget/packages/",
         "outputPath": "/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Infrastructure/obj/",
         "projectStyle": "PackageReference",
-        "configFilePaths": [
-          "/Users/douglascobiank/.nuget/NuGet/NuGet.Config"
-        ],
-        "originalTargetFrameworks": [
-          "net10.0"
-        ],
+        "configFilePaths": ["/Users/douglascobiank/.nuget/NuGet/NuGet.Config"],
+        "originalTargetFrameworks": ["net10.0"],
         "sources": {
           "https://api.nuget.org/v3/index.json": {}
         },
@@ -1213,9 +1167,7 @@
           }
         },
         "warningProperties": {
-          "warnAsError": [
-            "NU1605"
-          ]
+          "warnAsError": ["NU1605"]
         },
         "restoreAuditProperties": {
           "enableAudit": "true",
@@ -1244,15 +1196,7 @@
               "version": "[10.0.2, )"
             }
           },
-          "imports": [
-            "net461",
-            "net462",
-            "net47",
-            "net471",
-            "net472",
-            "net48",
-            "net481"
-          ],
+          "imports": ["net461", "net462", "net47", "net471", "net472", "net48", "net481"],
           "assetTargetFallback": true,
           "warn": true,
           "frameworkReferences": {

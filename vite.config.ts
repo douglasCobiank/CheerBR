@@ -14,9 +14,7 @@ export default defineConfig({
   },
   vite: {
     server: {
-      allowedHosts: [
-        'cheerbr-1.onrender.com'
-      ]
-    }
-  }
+      allowedHosts: ["cheerbr-1.onrender.com"],
+    },
+  },
 });

@@ -1,4 +1,4 @@
-import { Team } from "./teams-store"; // we can move the Team type here or keep it in teams-store
+import type { Team } from "./types";
 
 const API_URL = "https://cheerbr-2.onrender.com/api";
 
@@ -8,7 +8,7 @@ export const api = {
     if (categoria) params.append("categoria", categoria);
     if (cidade) params.append("cidade", cidade);
     if (q) params.append("q", q);
-    
+
     const query = params.toString();
     const url = `${API_URL}/teams${query ? `?${query}` : ""}`;
     const res = await fetch(url);
@@ -32,7 +32,7 @@ export const api = {
     return res.json() as Promise<Team>;
   },
 
-  updateTeam: async (id: string, team: Omit<Team, "score">) => {
+  updateTeam: async (id: string, team: Partial<Omit<Team, "score">>) => {
     const res = await fetch(`${API_URL}/teams/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
@@ -61,7 +61,7 @@ export const api = {
     return res.json();
   },
 
-  createTeamResult: async (teamId: string, result: any) => {
+  createTeamResult: async (teamId: string, result: Record<string, unknown>) => {
     const res = await fetch(`${API_URL}/teams/${teamId}/results`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -74,12 +74,12 @@ export const api = {
   uploadTeamLogo: async (teamId: string, file: File) => {
     const formData = new FormData();
     formData.append("file", file);
-    
+
     const res = await fetch(`${API_URL}/teams/${teamId}/logo`, {
       method: "POST",
       body: formData,
     });
     if (!res.ok) throw new Error("Failed to upload logo");
     return res.json();
-  }
+  },
 };

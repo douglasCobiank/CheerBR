@@ -79,14 +79,9 @@ function Home() {
         <div className="mb-6 flex items-end justify-between">
           <div>
             <h2 className="font-display text-4xl">Destaques</h2>
-            <p className="text-sm text-muted-foreground">
-              Top 3 equipes pelo score Cheer BR.
-            </p>
+            <p className="text-sm text-muted-foreground">Top 3 equipes pelo score Cheer BR.</p>
           </div>
-          <Link
-            to="/ranking"
-            className="text-sm text-primary hover:underline"
-          >
+          <Link to="/ranking" className="text-sm text-primary hover:underline">
             Ver ranking completo →
           </Link>
         </div>

@@ -17,7 +17,6 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/70 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6">
-        
         {/* Logo / Link Home */}
         <Link to="/" className="flex items-center gap-2 group">
           <span className="grid h-9 w-9 place-items-center rounded-lg bg-[image:var(--gradient-hero)] font-display text-lg shadow-[var(--shadow-glow)] transition-transform group-hover:scale-105">
@@ -45,7 +44,6 @@ export function SiteHeader() {
             </Link>
           ))}
         </nav>
-
       </div>
     </header>
   );

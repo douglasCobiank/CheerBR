@@ -1,26 +1,6 @@
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import type { Team } from "./types";
 import { api } from "./api";
-
-export type Team = {
-  id: string;
-  nome: string;
-  programa: string | null;
-  nivel: number | null;
-  cidade: string;
-  estado: string;
-  categoria: string;
-  instagram: string | null;
-  facebook: string | null;
-  coach: string | null;
-  fundacao: string | null;
-  status: string;
-  logoUrl: string | null;
-  score: number;
-};
 
 export function useTeams() {
   const queryClient = useQueryClient();
@@ -43,13 +23,7 @@ export function useTeams() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({
-      id,
-      data,
-    }: {
-      id: string;
-      data: Partial<Team>;
-    }) => api.updateTeam(id, data),
+    mutationFn: ({ id, data }: { id: string; data: Partial<Team> }) => api.updateTeam(id, data),
     onSuccess: invalidateAll,
   });
 
@@ -76,8 +50,7 @@ export function useTeamResults(teamId: string) {
   const queryClient = useQueryClient();
 
   const addResultMutation = useMutation({
-    mutationFn: (data: any) =>
-      api.createTeamResult(teamId, data),
+    mutationFn: (data: Record<string, unknown>) => api.createTeamResult(teamId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["teams"] });
       queryClient.invalidateQueries({ queryKey: ["ranking"] });
@@ -95,8 +68,7 @@ export function useUploadLogo(teamId: string) {
   const queryClient = useQueryClient();
 
   const uploadMutation = useMutation({
-    mutationFn: (file: File) =>
-      api.uploadTeamLogo(teamId, file),
+    mutationFn: (file: File) => api.uploadTeamLogo(teamId, file),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["teams"] });
     },

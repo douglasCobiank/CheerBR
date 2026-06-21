@@ -13,3 +13,4 @@
 /Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Application/obj/Debug/net10.0/refint/Cheer.Application.dll
 /Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Application/obj/Debug/net10.0/Cheer.Application.pdb
 /Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Application/obj/Debug/net10.0/ref/Cheer.Application.dll
+/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Application/obj/Debug/net10.0/Cheer.Application.sourcelink.json

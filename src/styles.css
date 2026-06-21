@@ -56,7 +56,7 @@
   --popover: oklch(0.21 0.05 270);
   --popover-foreground: oklch(0.98 0.01 250);
 
-  --primary: oklch(0.68 0.27 350);          /* hot magenta */
+  --primary: oklch(0.68 0.27 350); /* hot magenta */
   --primary-foreground: oklch(0.99 0 0);
 
   --secondary: oklch(0.28 0.06 270);
@@ -65,7 +65,7 @@
   --muted: oklch(0.25 0.04 270);
   --muted-foreground: oklch(0.72 0.03 260);
 
-  --accent: oklch(0.78 0.18 200);           /* electric cyan */
+  --accent: oklch(0.78 0.18 200); /* electric cyan */
   --accent-foreground: oklch(0.15 0.04 270);
 
   --destructive: oklch(0.65 0.24 27);
@@ -79,14 +79,21 @@
   --silver: oklch(0.82 0.02 250);
   --bronze: oklch(0.66 0.13 55);
 
-  --gradient-hero: linear-gradient(135deg, oklch(0.68 0.27 350) 0%, oklch(0.55 0.25 320) 50%, oklch(0.45 0.22 270) 100%);
+  --gradient-hero: linear-gradient(
+    135deg,
+    oklch(0.68 0.27 350) 0%,
+    oklch(0.55 0.25 320) 50%,
+    oklch(0.45 0.22 270) 100%
+  );
   --gradient-card: linear-gradient(160deg, oklch(0.24 0.06 280) 0%, oklch(0.19 0.05 270) 100%);
   --shadow-glow: 0 0 40px oklch(0.68 0.27 350 / 0.45);
   --shadow-card: 0 10px 30px -10px oklch(0 0 0 / 0.5);
 }
 
 @layer base {
-  * { border-color: var(--color-border); }
+  * {
+    border-color: var(--color-border);
+  }
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
@@ -96,7 +103,10 @@
       radial-gradient(circle at 90% 100%, oklch(0.78 0.18 200 / 0.1), transparent 40%);
     background-attachment: fixed;
   }
-  h1, h2, h3, .display {
+  h1,
+  h2,
+  h3,
+  .display {
     font-family: var(--font-display);
     letter-spacing: 0.02em;
   }

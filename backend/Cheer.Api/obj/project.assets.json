@@ -30,9 +30,7 @@
             "related": ".xml"
           }
         },
-        "frameworkReferences": [
-          "Microsoft.AspNetCore.App"
-        ],
+        "frameworkReferences": ["Microsoft.AspNetCore.App"],
         "build": {
           "build/Microsoft.AspNetCore.OpenApi.targets": {}
         }
@@ -774,9 +772,7 @@
             "related": ".pdb;.xml"
           }
         },
-        "frameworkReferences": [
-          "Microsoft.AspNetCore.App"
-        ]
+        "frameworkReferences": ["Microsoft.AspNetCore.App"]
       },
       "Swashbuckle.AspNetCore.SwaggerGen/10.2.1": {
         "type": "package",
@@ -806,9 +802,7 @@
             "related": ".pdb;.xml"
           }
         },
-        "frameworkReferences": [
-          "Microsoft.AspNetCore.App"
-        ]
+        "frameworkReferences": ["Microsoft.AspNetCore.App"]
       },
       "System.CodeDom/6.0.0": {
         "type": "package",
@@ -3017,12 +3011,8 @@
       "packagesPath": "/Users/douglascobiank/.nuget/packages/",
       "outputPath": "/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Api/obj/",
       "projectStyle": "PackageReference",
-      "configFilePaths": [
-        "/Users/douglascobiank/.nuget/NuGet/NuGet.Config"
-      ],
-      "originalTargetFrameworks": [
-        "net10.0"
-      ],
+      "configFilePaths": ["/Users/douglascobiank/.nuget/NuGet/NuGet.Config"],
+      "originalTargetFrameworks": ["net10.0"],
       "sources": {
         "https://api.nuget.org/v3/index.json": {}
       },
@@ -3041,9 +3031,7 @@
         }
       },
       "warningProperties": {
-        "warnAsError": [
-          "NU1605"
-        ]
+        "warnAsError": ["NU1605"]
       },
       "restoreAuditProperties": {
         "enableAudit": "true",
@@ -3076,15 +3064,7 @@
             "version": "[10.2.1, )"
           }
         },
-        "imports": [
-          "net461",
-          "net462",
-          "net47",
-          "net471",
-          "net472",
-          "net48",
-          "net481"
-        ],
+        "imports": ["net461", "net462", "net47", "net471", "net472", "net48", "net481"],
         "assetTargetFallback": true,
         "warn": true,
         "frameworkReferences": {
