@@ -69,6 +69,35 @@ public class TeamService : ITeamService
         return result.ToDto();
     }
 
+    public async Task<CompetitionResultDto> UpdateResultAsync(string teamId, string resultId, UpdateCompetitionResultDto dto)
+    {
+        var team = await _repository.GetByIdAsync(teamId)
+            ?? throw new InvalidOperationException("Team not found");
+
+        var result = team.Results.FirstOrDefault(r => r.Id == resultId)
+            ?? throw new InvalidOperationException("Result not found");
+
+        dto.ApplyTo(result);
+        team.CalculateScore(DateTime.Now.Year);
+
+        await _repository.UpdateAsync(team);
+        return result.ToDto();
+    }
+
+    public async Task DeleteResultAsync(string teamId, string resultId)
+    {
+        var team = await _repository.GetByIdAsync(teamId)
+            ?? throw new InvalidOperationException("Team not found");
+
+        var result = team.Results.FirstOrDefault(r => r.Id == resultId)
+            ?? throw new InvalidOperationException("Result not found");
+
+        team.Results.Remove(result);
+        team.CalculateScore(DateTime.Now.Year);
+
+        await _repository.UpdateAsync(team);
+    }
+
     public async Task<IEnumerable<TeamDto>> GetRankingAsync(string? categoria = null)
     {
         var ranking = await _repository.GetRankingAsync(categoria);

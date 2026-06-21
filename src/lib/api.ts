@@ -1,4 +1,4 @@
-import type { Team } from "./types";
+import type { Team, Championship } from "./types";
 
 const API_URL = "https://cheerbr-2.onrender.com/api";
 
@@ -69,6 +69,46 @@ export const api = {
     });
     if (!res.ok) throw new Error("Failed to create result");
     return res.json();
+  },
+
+  getChampionships: async () => {
+    const res = await fetch(`${API_URL}/championships`);
+    if (!res.ok) throw new Error("Failed to fetch championships");
+    return res.json() as Promise<Championship[]>;
+  },
+
+  createChampionship: async (nome: string) => {
+    const res = await fetch(`${API_URL}/championships`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ nome }),
+    });
+    if (!res.ok) throw new Error("Failed to create championship");
+    return res.json() as Promise<Championship>;
+  },
+
+  deleteChampionship: async (id: string) => {
+    const res = await fetch(`${API_URL}/championships/${id}`, {
+      method: "DELETE",
+    });
+    if (!res.ok) throw new Error("Failed to delete championship");
+  },
+
+  updateTeamResult: async (teamId: string, resultId: string, result: Record<string, unknown>) => {
+    const res = await fetch(`${API_URL}/teams/${teamId}/results/${resultId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(result),
+    });
+    if (!res.ok) throw new Error("Failed to update result");
+    return res.json();
+  },
+
+  deleteTeamResult: async (teamId: string, resultId: string) => {
+    const res = await fetch(`${API_URL}/teams/${teamId}/results/${resultId}`, {
+      method: "DELETE",
+    });
+    if (!res.ok) throw new Error("Failed to delete result");
   },
 
   uploadTeamLogo: async (teamId: string, file: File) => {

@@ -3,7 +3,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { Field } from "@/components/ui/field";
 import { Modal } from "@/components/modal";
-import { INPUT_CLASS, CATEGORIAS } from "@/lib/constants";
+import { INPUT_CLASS, CATEGORIAS, STATUSES } from "@/lib/constants";
 
 const schema = z.object({
   nome: z.string().min(2),
@@ -101,12 +101,11 @@ export function AddTeamDialog({
             />
           </Field>
 
-          <Field label="Nível">
+          <Field label="Estado">
             <input
-              type="number"
               className={INPUT_CLASS}
-              value={form.nivel}
-              onChange={(e) => set("nivel", Number(e.target.value))}
+              value={form.estado}
+              onChange={(e) => set("estado", e.target.value)}
             />
           </Field>
 
@@ -118,6 +117,69 @@ export function AddTeamDialog({
             >
               {CATEGORIAS.map((c) => (
                 <option key={c}>{c}</option>
+              ))}
+            </select>
+          </Field>
+
+          <Field label="Programa / Ginásio">
+            <input
+              className={INPUT_CLASS}
+              value={form.programa ?? ""}
+              onChange={(e) => set("programa", e.target.value || null)}
+            />
+          </Field>
+
+          <Field label="Nível">
+            <input
+              type="number"
+              min="1"
+              max="6"
+              className={INPUT_CLASS}
+              value={form.nivel}
+              onChange={(e) => set("nivel", Number(e.target.value))}
+            />
+          </Field>
+
+          <Field label="Coach">
+            <input
+              className={INPUT_CLASS}
+              value={form.coach ?? ""}
+              onChange={(e) => set("coach", e.target.value || null)}
+            />
+          </Field>
+
+          <Field label="Instagram">
+            <input
+              className={INPUT_CLASS}
+              value={form.instagram ?? ""}
+              onChange={(e) => set("instagram", e.target.value || null)}
+            />
+          </Field>
+
+          <Field label="Facebook">
+            <input
+              className={INPUT_CLASS}
+              value={form.facebook ?? ""}
+              onChange={(e) => set("facebook", e.target.value || null)}
+            />
+          </Field>
+
+          <Field label="Fundação">
+            <input
+              className={INPUT_CLASS}
+              value={form.fundacao ?? ""}
+              onChange={(e) => set("fundacao", e.target.value || null)}
+            />
+          </Field>
+
+          <Field label="Status">
+            <select
+              className={INPUT_CLASS}
+              value={form.status}
+              onChange={(e) => set("status", e.target.value)}
+            >
+              {STATUSES.map((s) => (
+                <option key={s}>{s}</option>
               ))}
             </select>
           </Field>

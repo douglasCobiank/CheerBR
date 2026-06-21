@@ -36,6 +36,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Dependency Injection
 builder.Services.AddScoped<ITeamRepository, TeamRepository>();
 builder.Services.AddScoped<ITeamService, TeamService>();
+builder.Services.AddScoped<IChampionshipRepository, ChampionshipRepository>();
+builder.Services.AddScoped<IChampionshipService, ChampionshipService>();
 
 var app = builder.Build();
 

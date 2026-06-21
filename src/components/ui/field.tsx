@@ -4,11 +4,12 @@ type FieldProps = {
   label: string;
   error?: string;
   children: ReactNode;
+  className?: string;
 };
 
-export function Field({ label, error, children }: FieldProps) {
+export function Field({ label, error, children, className }: FieldProps) {
   return (
-    <label className="block">
+    <label className={className ?? "block"}>
       <span className="mb-1 block text-xs uppercase tracking-wider text-muted-foreground">
         {label}
       </span>

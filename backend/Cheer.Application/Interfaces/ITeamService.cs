@@ -12,6 +12,8 @@ namespace Cheer.Application.Interfaces
         Task UpdateTeamAsync(UpdateTeamDto dto);
         Task DeleteTeamAsync(string id);
         Task<CompetitionResultDto> AddResultAsync(string teamId, CreateCompetitionResultDto dto);
+        Task<CompetitionResultDto> UpdateResultAsync(string teamId, string resultId, UpdateCompetitionResultDto dto);
+        Task DeleteResultAsync(string teamId, string resultId);
         Task<IEnumerable<TeamDto>> GetRankingAsync(string? categoria = null);
         Task<StatsOverviewDto> GetStatsOverviewAsync();
     }

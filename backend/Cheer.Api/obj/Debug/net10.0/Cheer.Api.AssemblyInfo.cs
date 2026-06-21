@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Cheer.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5c7a009081ea44d79f369ea00130519ff4197465")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+49598d2066b8835066377c44ec448291ec334842")]
 [assembly: System.Reflection.AssemblyProductAttribute("Cheer.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Cheer.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

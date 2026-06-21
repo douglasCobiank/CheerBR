@@ -76,6 +76,34 @@ namespace Cheer.Api.Controllers
             }
         }
 
+        [HttpPut("{id}/results/{resultId}")]
+        public async Task<ActionResult<CompetitionResultDto>> UpdateResult(string id, string resultId, [FromBody] UpdateCompetitionResultDto dto)
+        {
+            try
+            {
+                var result = await _teamService.UpdateResultAsync(id, resultId, dto);
+                return Ok(result);
+            }
+            catch
+            {
+                return NotFound("Team or result not found");
+            }
+        }
+
+        [HttpDelete("{id}/results/{resultId}")]
+        public async Task<ActionResult> DeleteResult(string id, string resultId)
+        {
+            try
+            {
+                await _teamService.DeleteResultAsync(id, resultId);
+                return NoContent();
+            }
+            catch
+            {
+                return NotFound("Team or result not found");
+            }
+        }
+
         [HttpPost("{id}/logo")]
         public async Task<ActionResult<TeamDto>> UploadLogo(string id, IFormFile file)
         {

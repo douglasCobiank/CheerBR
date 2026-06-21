@@ -1,12 +1,15 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import type { Team, CompetitionResult } from "@/lib/types";
 import { useTeams, useTeamResults, useUploadLogo } from "@/lib/teams-store";
 import { TeamCard } from "@/components/team-card";
 import { Field } from "@/components/ui/field";
 import { Modal } from "@/components/modal";
-import { ArrowLeft, Edit, Save, Plus, X, Image as ImageIcon } from "lucide-react";
+import { ArrowLeft, Edit, Save, Plus, X, Image as ImageIcon, Trash2 } from "lucide-react";
 import { CATEGORIAS, STATUSES, IMPORTANCIAS, TIPOS_CATEGORIA, INPUT_CLASS } from "@/lib/constants";
+import { api } from "@/lib/api";
+import { ResultForm, type ResultFormData } from "@/components/result-form";
 
 export const Route = createFileRoute("/equipes_/$id")({
   component: TeamDetailsPage,
@@ -15,6 +18,7 @@ export const Route = createFileRoute("/equipes_/$id")({
 function TeamDetailsPage() {
   const { id } = Route.useParams();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { teams = [], updateTeam, isLoading } = useTeams();
   const { addResult } = useTeamResults(id);
   const { uploadLogo, isUploading } = useUploadLogo(id);
@@ -22,6 +26,7 @@ function TeamDetailsPage() {
   const team = teams.find((t) => t.id === id);
   const [isEditing, setIsEditing] = useState(false);
   const [openResultModal, setOpenResultModal] = useState(false);
+  const [editingResult, setEditingResult] = useState<CompetitionResult | null>(null);
   const [form, setForm] = useState<Team>(team as Team);
 
   if (isLoading) return <div className="p-10 text-center">Carregando...</div>;
@@ -43,9 +48,30 @@ function TeamDetailsPage() {
     setIsEditing(false);
   };
 
-  const handleAddResult = async (resultData: CompetitionResultForm) => {
+  const handleAddResult = async (resultData: ResultFormData) => {
     await addResult(resultData as unknown as Record<string, unknown>);
     setOpenResultModal(false);
+  };
+
+  const handleUpdateResult = async (resultData: ResultFormData) => {
+    if (!editingResult) return;
+    await api.updateTeamResult(
+      id,
+      editingResult.id,
+      resultData as unknown as Record<string, unknown>,
+    );
+    queryClient.invalidateQueries({ queryKey: ["teams"] });
+    queryClient.invalidateQueries({ queryKey: ["ranking"] });
+    queryClient.invalidateQueries({ queryKey: ["stats"] });
+    setEditingResult(null);
+  };
+
+  const handleDeleteResult = async (resultId: string) => {
+    if (!confirm("Tem certeza que deseja excluir este resultado?")) return;
+    await api.deleteTeamResult(id, resultId);
+    queryClient.invalidateQueries({ queryKey: ["teams"] });
+    queryClient.invalidateQueries({ queryKey: ["ranking"] });
+    queryClient.invalidateQueries({ queryKey: ["stats"] });
   };
 
   const results: CompetitionResult[] = ((team as Record<string, unknown>).results ||
@@ -238,6 +264,7 @@ function TeamDetailsPage() {
                     <th className="px-4 py-3">Nível</th>
                     <th className="px-4 py-3">Categoria</th>
                     <th className="px-4 py-3 text-center">Posição</th>
+                    <th className="px-4 py-3 text-center">Ações</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
@@ -251,6 +278,26 @@ function TeamDetailsPage() {
                       <td className="px-4 py-3 text-center font-display text-lg text-primary">
                         {r.colocacao}º
                       </td>
+                      <td className="px-4 py-3 text-center">
+                        <div className="flex items-center justify-center gap-1">
+                          <button
+                            type="button"
+                            onClick={() => setEditingResult(r)}
+                            className="rounded-full p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground"
+                            title="Editar"
+                          >
+                            <Edit className="h-4 w-4" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteResult(r.id)}
+                            className="rounded-full p-1.5 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                            title="Excluir"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -260,151 +307,24 @@ function TeamDetailsPage() {
         </div>
       </div>
 
-      <Modal open={openResultModal} onClose={() => setOpenResultModal(false)}>
-        <AddResultForm onSubmit={handleAddResult} onClose={() => setOpenResultModal(false)} />
-      </Modal>
+      {openResultModal && (
+        <ResultForm onClose={() => setOpenResultModal(false)} onSubmit={handleAddResult} />
+      )}
+
+      {editingResult && (
+        <ResultForm
+          initial={{
+            ano: editingResult.ano,
+            nomeCampeonato: editingResult.nomeCampeonato,
+            importancia: editingResult.importancia,
+            nivel: editingResult.nivel,
+            tipoCategoria: editingResult.tipoCategoria,
+            colocacao: editingResult.colocacao,
+          }}
+          onClose={() => setEditingResult(null)}
+          onSubmit={handleUpdateResult}
+        />
+      )}
     </main>
-  );
-}
-
-type CompetitionResultForm = {
-  ano: number;
-  nomeCampeonato: string;
-  importancia: string;
-  nivel: number;
-  tipoCategoria: string;
-  colocacao: number;
-};
-
-function AddResultForm({
-  onClose,
-  onSubmit,
-}: {
-  onClose: () => void;
-  onSubmit: (data: CompetitionResultForm) => void;
-}) {
-  const [form, setForm] = useState<CompetitionResultForm>({
-    ano: new Date().getFullYear(),
-    nomeCampeonato: "",
-    importancia: "Estadual",
-    nivel: 2,
-    tipoCategoria: "Team Cheer",
-    colocacao: 1,
-  });
-
-  const set = <K extends keyof CompetitionResultForm>(k: K, v: CompetitionResultForm[K]) =>
-    setForm((f) => ({ ...f, [k]: v }));
-
-  return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        if (!form.nomeCampeonato) return;
-        onSubmit(form);
-      }}
-      className="w-full max-w-xl rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-card)]"
-    >
-      <div className="mb-5 flex items-center justify-between">
-        <h2 className="font-display text-3xl">Lançar Resultado</h2>
-        <button
-          type="button"
-          onClick={onClose}
-          className="rounded-full p-1.5 text-muted-foreground hover:bg-secondary"
-        >
-          <X className="h-4 w-4" />
-        </button>
-      </div>
-
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <Field label="Campeonato *">
-          <input
-            required
-            value={form.nomeCampeonato}
-            onChange={(e) => set("nomeCampeonato", e.target.value)}
-            className={INPUT_CLASS}
-            placeholder="Ex: Paranaense"
-          />
-        </Field>
-        <Field label="Ano *">
-          <input
-            type="number"
-            required
-            value={form.ano}
-            onChange={(e) => set("ano", Number(e.target.value))}
-            className={INPUT_CLASS}
-          />
-        </Field>
-        <Field label="Importância">
-          <select
-            value={form.importancia}
-            onChange={(e) => set("importancia", e.target.value)}
-            className={INPUT_CLASS}
-          >
-            {IMPORTANCIAS.map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
-            ))}
-          </select>
-        </Field>
-        <Field label="Tipo de Categoria">
-          <select
-            value={form.tipoCategoria}
-            onChange={(e) => set("tipoCategoria", e.target.value)}
-            className={INPUT_CLASS}
-          >
-            {TIPOS_CATEGORIA.map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
-            ))}
-          </select>
-        </Field>
-        <Field label="Nível (1-5)">
-          <input
-            type="number"
-            min="1"
-            max="5"
-            required
-            value={form.nivel}
-            onChange={(e) => set("nivel", Number(e.target.value))}
-            className={INPUT_CLASS}
-          />
-        </Field>
-        <Field label="Colocação Final (1 = Ouro)">
-          <input
-            type="number"
-            min="1"
-            required
-            value={form.colocacao}
-            onChange={(e) => set("colocacao", Number(e.target.value))}
-            className={INPUT_CLASS}
-          />
-        </Field>
-      </div>
-
-      <div className="mt-6 rounded-xl bg-secondary/50 p-4 text-sm text-muted-foreground">
-        <p>
-          <strong>Nota ProCheer:</strong> O sistema calculará os pontos automaticamente usando o
-          peso do ano, importância, nível e categoria.
-        </p>
-      </div>
-
-      <div className="mt-6 flex justify-end gap-2">
-        <button
-          type="button"
-          onClick={onClose}
-          className="rounded-full px-5 py-2.5 text-sm text-muted-foreground hover:bg-secondary"
-        >
-          Cancelar
-        </button>
-        <button
-          type="submit"
-          className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90"
-        >
-          Salvar Resultado
-        </button>
-      </div>
-    </form>
   );
 }

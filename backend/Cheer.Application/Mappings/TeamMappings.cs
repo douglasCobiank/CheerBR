@@ -92,4 +92,14 @@ public static class TeamMappings
             Colocacao = dto.Colocacao,
         };
     }
+
+    public static void ApplyTo(this UpdateCompetitionResultDto dto, CompetitionResult result)
+    {
+        result.Ano = dto.Ano;
+        result.NomeCampeonato = dto.NomeCampeonato;
+        result.Importancia = dto.Importancia;
+        result.Nivel = dto.Nivel;
+        result.TipoCategoria = dto.TipoCategoria;
+        result.Colocacao = dto.Colocacao;
+    }
 }

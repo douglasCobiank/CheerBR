@@ -40,3 +40,8 @@ export type CompetitionResult = {
   tipoCategoria: string;
   colocacao: number;
 };
+
+export type Championship = {
+  id: string;
+  nome: string;
+};

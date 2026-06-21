@@ -11,6 +11,7 @@ namespace Cheer.Infrastructure.Data
 
         public DbSet<Team> Teams { get; set; }
         public DbSet<CompetitionResult> CompetitionResults { get; set; }
+        public DbSet<Championship> Championships { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -36,6 +37,12 @@ namespace Cheer.Infrastructure.Data
                 entity.Property(e => e.NomeCampeonato).IsRequired();
                 entity.Property(e => e.Importancia).IsRequired();
                 entity.Property(e => e.TipoCategoria).IsRequired();
+            });
+
+            modelBuilder.Entity<Championship>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Nome).IsRequired();
             });
         }
     }

@@ -5,8 +5,8 @@
 /Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Domain/obj/Debug/net10.0/Cheer.Domain.AssemblyInfoInputs.cache
 /Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Domain/obj/Debug/net10.0/Cheer.Domain.AssemblyInfo.cs
 /Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Domain/obj/Debug/net10.0/Cheer.Domain.csproj.CoreCompileInputs.cache
+/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Domain/obj/Debug/net10.0/Cheer.Domain.sourcelink.json
 /Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Domain/obj/Debug/net10.0/Cheer.Domain.dll
 /Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Domain/obj/Debug/net10.0/refint/Cheer.Domain.dll
 /Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Domain/obj/Debug/net10.0/Cheer.Domain.pdb
 /Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Domain/obj/Debug/net10.0/ref/Cheer.Domain.dll
-/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Domain/obj/Debug/net10.0/Cheer.Domain.sourcelink.json
