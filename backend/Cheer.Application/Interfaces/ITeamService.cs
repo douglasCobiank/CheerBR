@@ -6,7 +6,7 @@ namespace Cheer.Application.Interfaces
 {
     public interface ITeamService
     {
-        Task<IEnumerable<TeamDto>> GetTeamsAsync(string? categoria = null, string? cidade = null, string? q = null);
+        Task<IEnumerable<TeamDto>> GetTeamsAsync(string? categoria = null, string? cidade = null, string? q = null, int? nivel = null);
         Task<TeamDto?> GetTeamByIdAsync(string id);
         Task<TeamDto> CreateTeamAsync(CreateTeamDto dto);
         Task UpdateTeamAsync(UpdateTeamDto dto);

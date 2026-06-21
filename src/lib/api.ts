@@ -3,11 +3,12 @@ import type { Team, Championship } from "./types";
 const API_URL = "https://cheerbr-2.onrender.com/api";
 
 export const api = {
-  getTeams: async (categoria?: string, cidade?: string, q?: string) => {
+  getTeams: async (categoria?: string, cidade?: string, q?: string, nivel?: number) => {
     const params = new URLSearchParams();
     if (categoria) params.append("categoria", categoria);
     if (cidade) params.append("cidade", cidade);
     if (q) params.append("q", q);
+    if (nivel) params.append("nivel", String(nivel));
 
     const query = params.toString();
     const url = `${API_URL}/teams${query ? `?${query}` : ""}`;

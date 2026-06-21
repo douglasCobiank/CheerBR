@@ -14,9 +14,9 @@ public class TeamService : ITeamService
         _repository = repository;
     }
 
-    public async Task<IEnumerable<TeamDto>> GetTeamsAsync(string? categoria = null, string? cidade = null, string? q = null)
+    public async Task<IEnumerable<TeamDto>> GetTeamsAsync(string? categoria = null, string? cidade = null, string? q = null, int? nivel = null)
     {
-        var teams = await _repository.GetAllAsync(categoria, cidade, q);
+        var teams = await _repository.GetAllAsync(categoria, cidade, q, nivel);
         var currentYear = DateTime.Now.Year;
         foreach (var t in teams) t.CalculateScore(currentYear);
 

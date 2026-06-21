@@ -9,6 +9,7 @@ interface NavItem {
 const NAV_ITEMS: readonly NavItem[] = [
   { to: "/", label: "Início" },
   { to: "/equipes", label: "Equipes" },
+  { to: "/campeonatos", label: "Campeonatos" },
   { to: "/ranking", label: "Ranking" },
   { to: "/dashboard", label: "Dashboard" },
 ] as const;

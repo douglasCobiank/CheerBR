@@ -17,7 +17,7 @@ namespace Cheer.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Team>> GetAllAsync(string? categoria = null, string? cidade = null, string? q = null)
+        public async Task<IEnumerable<Team>> GetAllAsync(string? categoria = null, string? cidade = null, string? q = null, int? nivel = null)
         {
             var query = _context.Teams.Include(t => t.Results).AsQueryable();
 
@@ -29,6 +29,9 @@ namespace Cheer.Infrastructure.Repositories
 
             if (!string.IsNullOrWhiteSpace(q))
                 query = query.Where(t => EF.Functions.Like(t.Nome, $"%{q}%") || EF.Functions.Like(t.Programa, $"%{q}%"));
+
+            if (nivel.HasValue)
+                query = query.Where(t => t.Nivel == nivel.Value);
 
             return await query.ToListAsync();
         }

@@ -18,9 +18,9 @@ namespace Cheer.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TeamDto>>> GetTeams([FromQuery] string? categoria, [FromQuery] string? cidade, [FromQuery] string? q)
+        public async Task<ActionResult<IEnumerable<TeamDto>>> GetTeams([FromQuery] string? categoria, [FromQuery] string? cidade, [FromQuery] string? q, [FromQuery] int? nivel)
         {
-            var teams = await _teamService.GetTeamsAsync(categoria, cidade, q);
+            var teams = await _teamService.GetTeamsAsync(categoria, cidade, q, nivel);
             return Ok(teams);
         }
 

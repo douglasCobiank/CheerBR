@@ -4,7 +4,7 @@ import { useTeams } from "@/lib/teams-store";
 import { TeamCard } from "@/components/team-card";
 import { AddTeamDialog } from "@/components/add-team-dialog";
 import { Plus, Search, X } from "lucide-react";
-import { CATEGORIAS } from "@/lib/constants";
+import { CATEGORIAS, NIVEL_MAX } from "@/lib/constants";
 
 export const Route = createFileRoute("/equipes/")({
   component: EquipesPage,
@@ -14,6 +14,7 @@ function EquipesPage() {
   const { teams = [], addTeam, removeTeam } = useTeams();
   const [q, setQ] = useState("");
   const [cat, setCat] = useState<string>("");
+  const [nivel, setNivel] = useState<string>("");
   const [open, setOpen] = useState(false);
 
   const filtered = useMemo(() => {
@@ -25,9 +26,10 @@ function EquipesPage() {
           .some((v) => v!.toLowerCase().includes(q.toLowerCase()));
 
       const matchC = !cat || t.categoria === cat;
-      return matchQ && matchC;
+      const matchN = !nivel || t.nivel === Number(nivel);
+      return matchQ && matchC && matchN;
     });
-  }, [teams, q, cat]);
+  }, [teams, q, cat, nivel]);
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
@@ -65,9 +67,23 @@ function EquipesPage() {
           onChange={(e) => setCat(e.target.value)}
           className="rounded-full border px-4 py-2.5 text-sm"
         >
-          <option value="">Todas</option>
+          <option value="">Todas as categorias</option>
           {CATEGORIAS.map((c) => (
             <option key={c}>{c}</option>
+          ))}
+        </select>
+
+        <select
+          name="nivel"
+          value={nivel}
+          onChange={(e) => setNivel(e.target.value)}
+          className="rounded-full border px-4 py-2.5 text-sm"
+        >
+          <option value="">Todos os níveis</option>
+          {Array.from({ length: NIVEL_MAX }, (_, i) => i + 1).map((n) => (
+            <option key={n} value={n}>
+              Nível {n}
+            </option>
           ))}
         </select>
       </div>

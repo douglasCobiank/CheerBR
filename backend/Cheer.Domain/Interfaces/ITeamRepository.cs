@@ -6,7 +6,7 @@ namespace Cheer.Domain.Interfaces
 {
     public interface ITeamRepository
     {
-        Task<IEnumerable<Team>> GetAllAsync(string? categoria = null, string? cidade = null, string? q = null);
+        Task<IEnumerable<Team>> GetAllAsync(string? categoria = null, string? cidade = null, string? q = null, int? nivel = null);
         Task<Team?> GetByIdAsync(string id);
         Task<Team> AddAsync(Team team);
         Task UpdateAsync(Team team);
