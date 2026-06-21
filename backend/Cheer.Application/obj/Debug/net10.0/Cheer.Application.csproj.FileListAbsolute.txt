@@ -1,0 +1,15 @@
+/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Application/bin/Debug/net10.0/Cheer.Application.deps.json
+/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Application/bin/Debug/net10.0/Cheer.Application.dll
+/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Application/bin/Debug/net10.0/Cheer.Application.pdb
+/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Application/bin/Debug/net10.0/Cheer.Domain.dll
+/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Application/bin/Debug/net10.0/Cheer.Domain.pdb
+/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Application/obj/Debug/net10.0/Cheer.Application.csproj.AssemblyReference.cache
+/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Application/obj/Debug/net10.0/Cheer.Application.GeneratedMSBuildEditorConfig.editorconfig
+/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Application/obj/Debug/net10.0/Cheer.Application.AssemblyInfoInputs.cache
+/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Application/obj/Debug/net10.0/Cheer.Application.AssemblyInfo.cs
+/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Application/obj/Debug/net10.0/Cheer.Application.csproj.CoreCompileInputs.cache
+/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Application/obj/Debug/net10.0/Cheer.Ap.FE3B2E51.Up2Date
+/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Application/obj/Debug/net10.0/Cheer.Application.dll
+/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Application/obj/Debug/net10.0/refint/Cheer.Application.dll
+/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Application/obj/Debug/net10.0/Cheer.Application.pdb
+/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Application/obj/Debug/net10.0/ref/Cheer.Application.dll

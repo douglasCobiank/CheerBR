@@ -1,0 +1,17 @@
+/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Infrastructure/bin/Debug/net10.0/Cheer.Infrastructure.deps.json
+/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Infrastructure/bin/Debug/net10.0/Cheer.Infrastructure.dll
+/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Infrastructure/bin/Debug/net10.0/Cheer.Infrastructure.pdb
+/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Infrastructure/bin/Debug/net10.0/Cheer.Domain.dll
+/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Infrastructure/bin/Debug/net10.0/Cheer.Domain.pdb
+/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Infrastructure/obj/Debug/net10.0/Cheer.Infrastructure.csproj.AssemblyReference.cache
+/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Infrastructure/obj/Debug/net10.0/Cheer.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Infrastructure/obj/Debug/net10.0/Cheer.Infrastructure.AssemblyInfoInputs.cache
+/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Infrastructure/obj/Debug/net10.0/Cheer.Infrastructure.AssemblyInfo.cs
+/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Infrastructure/obj/Debug/net10.0/Cheer.Infrastructure.csproj.CoreCompileInputs.cache
+/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Infrastructure/obj/Debug/net10.0/Cheer.In.3614E6C0.Up2Date
+/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Infrastructure/obj/Debug/net10.0/Cheer.Infrastructure.dll
+/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Infrastructure/obj/Debug/net10.0/refint/Cheer.Infrastructure.dll
+/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Infrastructure/obj/Debug/net10.0/Cheer.Infrastructure.pdb
+/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Infrastructure/obj/Debug/net10.0/ref/Cheer.Infrastructure.dll
+/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Infrastructure/bin/Debug/net10.0/Cheer.Infrastructure.runtimeconfig.json
+/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Infrastructure/obj/Debug/net10.0/Cheer.Infrastructure.genruntimeconfig.cache

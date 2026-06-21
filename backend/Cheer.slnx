@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Cheer.Api/Cheer.Api.csproj" />
+  <Project Path="Cheer.Application/Cheer.Application.csproj" />
+  <Project Path="Cheer.Domain/Cheer.Domain.csproj" />
+  <Project Path="Cheer.Infrastructure/Cheer.Infrastructure.csproj" />
+</Solution>
