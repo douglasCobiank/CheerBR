@@ -16,7 +16,7 @@ export function SiteHeader() {
             C
           </span>
           <div className="leading-tight">
-            <div className="font-display text-xl tracking-wider">CHEER PR</div>
+            <div className="font-display text-xl tracking-wider">CHEER BR</div>
             <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
               Mapa oficial
             </div>
