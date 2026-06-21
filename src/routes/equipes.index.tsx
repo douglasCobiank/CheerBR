@@ -117,18 +117,19 @@ function AddTeamDialog({
   onSubmit: (t: FormState) => void;
 }) {
   const [form, setForm] = useState<FormState>({
-    nome: "",
-    programa: "",
-    nivel: 2,
-    cidade: "",
-    estado: "PR",
-    categoria: "Universitário",
-    instagram: "",
-    facebook: "",
-    coach: "",
-    fundacao: "",
-    status: "Ativo",
-  });
+  logoUrl: null,  
+  nome: "",
+  programa: null,
+  nivel: 2,
+  cidade: "",
+  estado: "PR",
+  categoria: "Universitário",
+  instagram: null,
+  facebook: null,
+  coach: null,
+  fundacao: null,
+  status: "Ativo",
+});
 
   const set = <K extends keyof FormState>(k: K, v: FormState[K]) =>
     setForm((f) => ({ ...f, [k]: v }));

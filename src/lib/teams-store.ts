@@ -1,4 +1,8 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { api } from "./api";
 
 export type Team = {
@@ -27,36 +31,41 @@ export function useTeams() {
     initialData: [],
   });
 
+  const invalidateAll = () => {
+    queryClient.invalidateQueries({ queryKey: ["teams"] });
+    queryClient.invalidateQueries({ queryKey: ["ranking"] });
+    queryClient.invalidateQueries({ queryKey: ["stats"] });
+  };
+
   const addMutation = useMutation({
     mutationFn: api.createTeam,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["teams"] });
-      queryClient.invalidateQueries({ queryKey: ["ranking"] });
-      queryClient.invalidateQueries({ queryKey: ["stats"] });
-    },
+    onSuccess: invalidateAll,
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: Omit<Team, "score"> }) => api.updateTeam(id, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["teams"] });
-      queryClient.invalidateQueries({ queryKey: ["ranking"] });
-      queryClient.invalidateQueries({ queryKey: ["stats"] });
-    },
+    mutationFn: ({
+      id,
+      data,
+    }: {
+      id: string;
+      data: Partial<Team>;
+    }) => api.updateTeam(id, data),
+    onSuccess: invalidateAll,
   });
 
   const removeMutation = useMutation({
     mutationFn: api.deleteTeam,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["teams"] });
-      queryClient.invalidateQueries({ queryKey: ["ranking"] });
-      queryClient.invalidateQueries({ queryKey: ["stats"] });
-    },
+    onSuccess: invalidateAll,
   });
 
   return {
-    teams: teamsQuery.data,
+    teams: teamsQuery.data ?? [],
     isLoading: teamsQuery.isLoading,
+
+    isCreating: addMutation.isPending,
+    isUpdating: updateMutation.isPending,
+    isDeleting: removeMutation.isPending,
+
     addTeam: addMutation.mutateAsync,
     updateTeam: updateMutation.mutateAsync,
     removeTeam: removeMutation.mutateAsync,
@@ -67,7 +76,8 @@ export function useTeamResults(teamId: string) {
   const queryClient = useQueryClient();
 
   const addResultMutation = useMutation({
-    mutationFn: (data: any) => api.createTeamResult(teamId, data),
+    mutationFn: (data: any) =>
+      api.createTeamResult(teamId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["teams"] });
       queryClient.invalidateQueries({ queryKey: ["ranking"] });
@@ -77,6 +87,7 @@ export function useTeamResults(teamId: string) {
 
   return {
     addResult: addResultMutation.mutateAsync,
+    isCreating: addResultMutation.isPending,
   };
 }
 
@@ -84,7 +95,8 @@ export function useUploadLogo(teamId: string) {
   const queryClient = useQueryClient();
 
   const uploadMutation = useMutation({
-    mutationFn: (file: File) => api.uploadTeamLogo(teamId, file),
+    mutationFn: (file: File) =>
+      api.uploadTeamLogo(teamId, file),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["teams"] });
     },
