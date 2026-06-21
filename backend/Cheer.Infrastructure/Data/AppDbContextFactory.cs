@@ -10,7 +10,7 @@ public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
         var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
 
         optionsBuilder.UseNpgsql(
-            "Host=db.ddibhzidgedzpfwwhczt.supabase.co;Database=postgres;Username=postgres;Password=procheer2025;SSL Mode=Require;Trust Server Certificate=true");
+            "Host=dpg-d8ro3ie7r5hc73ej03d0-a.oregon-postgres.render.com;Database=cheer_br_ranking;Username=cheer_br_ranking_user;Password=qF6z4mEtPakJSPhCKWkpqPyeqYffWIq5;SSL Mode=Require;Trust Server Certificate=true");
 
         return new AppDbContext(optionsBuilder.Options);
     }

@@ -15,3 +15,4 @@
 /Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Infrastructure/obj/Debug/net10.0/ref/Cheer.Infrastructure.dll
 /Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Infrastructure/bin/Debug/net10.0/Cheer.Infrastructure.runtimeconfig.json
 /Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Infrastructure/obj/Debug/net10.0/Cheer.Infrastructure.genruntimeconfig.cache
+/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Infrastructure/obj/Debug/net10.0/Cheer.Infrastructure.sourcelink.json
