@@ -25,7 +25,7 @@ export const TIPOS_CATEGORIA = [
   "Best Cheer",
 ] as const;
 
-export const NIVEL_MAX = 5;
+export const NIVEL_MAX = 6;
 
 export const INPUT_CLASS =
   "w-full rounded-lg border border-border bg-input/60 px-3 py-2 text-sm outline-none focus:border-primary";

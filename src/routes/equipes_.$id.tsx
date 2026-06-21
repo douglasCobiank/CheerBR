@@ -7,7 +7,7 @@ import { TeamCard } from "@/components/team-card";
 import { Field } from "@/components/ui/field";
 import { Modal } from "@/components/modal";
 import { ArrowLeft, Edit, Save, Plus, X, Image as ImageIcon, Trash2 } from "lucide-react";
-import { CATEGORIAS, STATUSES, IMPORTANCIAS, TIPOS_CATEGORIA, INPUT_CLASS } from "@/lib/constants";
+import { CATEGORIAS, STATUSES, NIVEL_MAX, IMPORTANCIAS, TIPOS_CATEGORIA, INPUT_CLASS } from "@/lib/constants";
 import { api } from "@/lib/api";
 import { ResultForm, type ResultFormData } from "@/components/result-form";
 
@@ -27,7 +27,7 @@ function TeamDetailsPage() {
   const [isEditing, setIsEditing] = useState(false);
   const [openResultModal, setOpenResultModal] = useState(false);
   const [editingResult, setEditingResult] = useState<CompetitionResult | null>(null);
-  const [form, setForm] = useState<Team>(team as Team);
+  const [form, setForm] = useState<Team | null>(null);
 
   if (isLoading) return <div className="p-10 text-center">Carregando...</div>;
 
@@ -44,6 +44,7 @@ function TeamDetailsPage() {
 
   const handleUpdateTeam = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!form) return;
     await updateTeam({ id, data: form });
     setIsEditing(false);
   };
@@ -107,7 +108,7 @@ function TeamDetailsPage() {
               <TeamCard team={team} />
               <button
                 onClick={() => {
-                  setForm(team);
+                  setForm({ ...team });
                   setIsEditing(true);
                 }}
                 className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-border bg-card px-5 py-2.5 text-sm font-semibold hover:bg-secondary"
@@ -115,7 +116,7 @@ function TeamDetailsPage() {
                 <Edit className="h-4 w-4" /> Editar Informações
               </button>
             </div>
-          ) : (
+          ) : form ? (
             <form
               onSubmit={handleUpdateTeam}
               className="rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-card)]"
@@ -130,6 +131,9 @@ function TeamDetailsPage() {
                         src={form.logoUrl}
                         alt="Logo"
                         className="h-12 w-12 shrink-0 rounded-xl border border-border object-cover"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).style.display = "none";
+                        }}
                       />
                     ) : (
                       <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-secondary text-secondary-foreground">
@@ -164,7 +168,7 @@ function TeamDetailsPage() {
                 <Field label="Programa / Ginásio">
                   <input
                     value={form.programa ?? ""}
-                    onChange={(e) => setForm({ ...form, programa: e.target.value })}
+                    onChange={(e) => setForm({ ...form, programa: e.target.value || null })}
                     className={INPUT_CLASS}
                   />
                 </Field>
@@ -173,6 +177,13 @@ function TeamDetailsPage() {
                     required
                     value={form.cidade}
                     onChange={(e) => setForm({ ...form, cidade: e.target.value })}
+                    className={INPUT_CLASS}
+                  />
+                </Field>
+                <Field label="Estado">
+                  <input
+                    value={form.estado}
+                    onChange={(e) => setForm({ ...form, estado: e.target.value })}
                     className={INPUT_CLASS}
                   />
                 </Field>
@@ -189,17 +200,45 @@ function TeamDetailsPage() {
                     ))}
                   </select>
                 </Field>
+                <Field label="Nível">
+                  <select
+                    value={form.nivel ?? ""}
+                    onChange={(e) => setForm({ ...form, nivel: e.target.value ? Number(e.target.value) : null })}
+                    className={INPUT_CLASS}
+                  >
+                    <option value="">—</option>
+                    {Array.from({ length: NIVEL_MAX }, (_, i) => i + 1).map((n) => (
+                      <option key={n} value={n}>
+                        Nível {n}
+                      </option>
+                    ))}
+                  </select>
+                </Field>
                 <Field label="Coach">
                   <input
                     value={form.coach ?? ""}
-                    onChange={(e) => setForm({ ...form, coach: e.target.value })}
+                    onChange={(e) => setForm({ ...form, coach: e.target.value || null })}
                     className={INPUT_CLASS}
                   />
                 </Field>
                 <Field label="Instagram">
                   <input
                     value={form.instagram ?? ""}
-                    onChange={(e) => setForm({ ...form, instagram: e.target.value })}
+                    onChange={(e) => setForm({ ...form, instagram: e.target.value || null })}
+                    className={INPUT_CLASS}
+                  />
+                </Field>
+                <Field label="Facebook">
+                  <input
+                    value={form.facebook ?? ""}
+                    onChange={(e) => setForm({ ...form, facebook: e.target.value || null })}
+                    className={INPUT_CLASS}
+                  />
+                </Field>
+                <Field label="Fundação">
+                  <input
+                    value={form.fundacao ?? ""}
+                    onChange={(e) => setForm({ ...form, fundacao: e.target.value || null })}
                     className={INPUT_CLASS}
                   />
                 </Field>
@@ -234,7 +273,7 @@ function TeamDetailsPage() {
                 </button>
               </div>
             </form>
-          )}
+          ) : null}
         </div>
 
         <div>

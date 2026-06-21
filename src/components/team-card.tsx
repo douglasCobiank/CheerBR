@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { Team } from "@/lib/types";
 import { Instagram, Facebook, MapPin, User } from "lucide-react";
 import { Link } from "@tanstack/react-router";
@@ -11,6 +12,7 @@ const tierColor = (n: number | null) => {
 };
 
 export function TeamCard({ team, rank }: { team: Team; rank?: number }) {
+  const [logoError, setLogoError] = useState(false);
   return (
     <div className="group relative overflow-hidden rounded-2xl border border-border/60 bg-[image:var(--gradient-card)] p-5 shadow-[var(--shadow-card)] transition hover:border-primary/60 hover:shadow-[var(--shadow-glow)]">
       <Link
@@ -23,11 +25,12 @@ export function TeamCard({ team, rank }: { team: Team; rank?: number }) {
         <div className="absolute right-4 top-4 font-display text-4xl text-primary/70">#{rank}</div>
       )}
       <div className="flex items-start gap-3">
-        {team.logoUrl ? (
+        {team.logoUrl && !logoError ? (
           <img
             src={team.logoUrl}
             alt={team.nome}
             className="h-12 w-12 shrink-0 rounded-xl object-cover border border-border"
+            onError={() => setLogoError(true)}
           />
         ) : (
           <span
