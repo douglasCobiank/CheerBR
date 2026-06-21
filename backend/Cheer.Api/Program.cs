@@ -1,14 +1,14 @@
 using Cheer.Application.Interfaces;
 using Cheer.Application.Services;
+using Cheer.Domain.Interfaces;
 using Cheer.Infrastructure.Data;
 using Cheer.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
-using Cheer.Domain.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Add services
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -18,33 +18,47 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins("https://seu-dominio.lovable.app", "http://localhost:5173", "http://localhost:8080")
+        policy.AllowAnyOrigin()
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
 });
 
+// Database
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"),
-        o => o.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null)));
+    options.UseNpgsql(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        o => o.EnableRetryOnFailure(
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(10),
+            errorCodesToAdd: null)));
 
-// Configure Dependency Injection
+// Dependency Injection
 builder.Services.AddScoped<ITeamRepository, TeamRepository>();
 builder.Services.AddScoped<ITeamService, TeamService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// Swagger (deixe habilitado enquanto testa)
+app.UseSwagger();
+app.UseSwaggerUI();
+
+// Não redirecionar HTTPS em produção
+if (!app.Environment.IsProduction())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseHttpsRedirection();
 }
 
-app.UseHttpsRedirection();
+// Pasta de uploads
+var uploadsFolder = Path.Combine(
+    Directory.GetCurrentDirectory(),
+    "wwwroot",
+    "uploads");
 
-var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
+if (!Directory.Exists(uploadsFolder))
+{
+    Directory.CreateDirectory(uploadsFolder);
+}
 
 app.UseStaticFiles(new StaticFileOptions
 {
@@ -52,11 +66,20 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = "/uploads"
 });
 
+// CORS
 app.UseCors();
 
 app.UseAuthorization();
 
-app.MapControllers();
+// Healthcheck
+app.MapGet("/", () => Results.Ok(new
+{
+    status = "online",
+    environment = app.Environment.EnvironmentName,
+    time = DateTime.UtcNow
+}));
 
+// Controllers
+app.MapControllers();
 
 app.Run();
