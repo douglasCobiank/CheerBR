@@ -1,6 +1,6 @@
 import { Team } from "./teams-store"; // we can move the Team type here or keep it in teams-store
 
-const API_URL = "http://localhost:5195/api";
+const API_URL = "https://cheerbr-2.onrender.com/api";
 
 export const api = {
   getTeams: async (categoria?: string, cidade?: string, q?: string) => {
