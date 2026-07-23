@@ -4,7 +4,7 @@ import { useTeams } from "@/lib/teams-store";
 import { TeamCard } from "@/components/team-card";
 import { AddTeamDialog } from "@/components/add-team-dialog";
 import { Plus, Search, X } from "lucide-react";
-import { CATEGORIAS, NIVEL_MAX } from "@/lib/constants";
+import { CATEGORIAS, NIVEIS } from "@/lib/constants";
 
 export const Route = createFileRoute("/equipes/")({
   component: EquipesPage,
@@ -80,7 +80,7 @@ function EquipesPage() {
           className="rounded-full border px-4 py-2.5 text-sm"
         >
           <option value="">Todos os níveis</option>
-          {Array.from({ length: NIVEL_MAX }, (_, i) => i + 1).map((n) => (
+          {NIVEIS.map((n) => (
             <option key={n} value={n}>
               Nível {n}
             </option>

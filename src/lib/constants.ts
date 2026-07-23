@@ -27,6 +27,9 @@ export const TIPOS_CATEGORIA = [
 
 export const NIVEL_MAX = 6;
 
+// Lista de niveis 1..NIVEL_MAX, evita re-implementar Array.from em cada select.
+export const NIVEIS = Array.from({ length: NIVEL_MAX }, (_, i) => i + 1);
+
 export const INPUT_CLASS =
   "w-full rounded-lg border border-border bg-input/60 px-3 py-2 text-sm outline-none focus:border-primary";
 

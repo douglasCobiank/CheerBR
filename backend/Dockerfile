@@ -17,12 +17,19 @@ COPY . .
 # 5. Encontra a pasta da API para compilar e publicar os arquivos finais
 RUN dotnet publish **/Cheer.Api/Cheer.Api.csproj -c Release -o /app/publish
 
-# 6. Estágio de Execução
+# 6. Estagio de Execucao
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 WORKDIR /app
 COPY --from=build /app/publish .
 
+# Seguranca: rodar como usuario nao-root (imagen aspnet:10.0 ja cria o grupo/usuario `app`)
+# https://learn.microsoft.com/dotnet/core/tools/dotnet-environment-variables
 ENV ASPNETCORE_URLS=http://+:10000
+ENV ASPNETCORE_ENVIRONMENT=Production
 EXPOSE 10000
+
+# Cria pasta de uploads gravavel pelo usuario nao-root e pertence a `app`
+RUN mkdir -p /var/lib/cheerbr/uploads && chown -R app:app /var/lib/cheerbr/uploads
+USER app
 
 ENTRYPOINT ["dotnet", "Cheer.Api.dll"]

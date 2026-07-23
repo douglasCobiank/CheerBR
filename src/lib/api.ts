@@ -1,6 +1,33 @@
-import type { Team, Championship } from "./types";
+import type { Team, Championship, CompetitionResult } from "./types";
 
-const API_URL = "https://cheerbr-2.onrender.com/api";
+const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:10000/api";
+
+async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const res = await fetch(`${API_URL}${path}`, {
+    ...init,
+    headers: {
+      ...(init?.body && !(init.body instanceof FormData)
+        ? { "Content-Type": "application/json" }
+        : {}),
+      ...init?.headers,
+    },
+  });
+  if (!res.ok) {
+    let detail = "";
+    try {
+      detail = (await res.text()) ?? "";
+    } catch {
+      // ignore body parse errors
+    }
+    throw new Error(`Request failed (${res.status}): ${detail || res.statusText}`);
+  }
+  if (res.status === 204) return undefined as T;
+  return (await res.json()) as T;
+}
+
+type CreateTeamPayload = Omit<Team, "id" | "score">;
+type UpdateTeamPayload = Partial<Omit<Team, "score">>;
+type ResultPayload = Omit<CompetitionResult, "id">;
 
 export const api = {
   getTeams: async (categoria?: string, cidade?: string, q?: string, nivel?: number) => {
@@ -9,118 +36,56 @@ export const api = {
     if (cidade) params.append("cidade", cidade);
     if (q) params.append("q", q);
     if (nivel) params.append("nivel", String(nivel));
-
     const query = params.toString();
-    const url = `${API_URL}/teams${query ? `?${query}` : ""}`;
-    const res = await fetch(url);
-    if (!res.ok) throw new Error("Failed to fetch teams");
-    return res.json() as Promise<Team[]>;
+    return request<Team[]>(`/teams${query ? `?${query}` : ""}`);
   },
 
-  getTeam: async (id: string) => {
-    const res = await fetch(`${API_URL}/teams/${id}`);
-    if (!res.ok) throw new Error("Failed to fetch team");
-    return res.json() as Promise<Team>;
-  },
-
-  createTeam: async (team: Omit<Team, "id" | "score">) => {
-    const res = await fetch(`${API_URL}/teams`, {
+  createTeam: async (team: CreateTeamPayload) =>
+    request<Team>("/teams", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(team),
-    });
-    if (!res.ok) throw new Error("Failed to create team");
-    return res.json() as Promise<Team>;
-  },
+    }),
 
-  updateTeam: async (id: string, team: Partial<Omit<Team, "score">>) => {
-    const res = await fetch(`${API_URL}/teams/${id}`, {
+  updateTeam: async (id: string, team: UpdateTeamPayload) =>
+    request<void>(`/teams/${id}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(team),
-    });
-    if (!res.ok) throw new Error("Failed to update team");
-  },
+    }),
 
-  deleteTeam: async (id: string) => {
-    const res = await fetch(`${API_URL}/teams/${id}`, {
-      method: "DELETE",
-    });
-    if (!res.ok) throw new Error("Failed to delete team");
-  },
+  deleteTeam: async (id: string) => request<void>(`/teams/${id}`, { method: "DELETE" }),
 
-  getRanking: async (categoria?: string) => {
-    const url = `${API_URL}/ranking${categoria ? `?categoria=${categoria}` : ""}`;
-    const res = await fetch(url);
-    if (!res.ok) throw new Error("Failed to fetch ranking");
-    return res.json() as Promise<Team[]>;
-  },
-
-  getStatsOverview: async () => {
-    const res = await fetch(`${API_URL}/stats/overview`);
-    if (!res.ok) throw new Error("Failed to fetch stats overview");
-    return res.json();
-  },
-
-  createTeamResult: async (teamId: string, result: Record<string, unknown>) => {
-    const res = await fetch(`${API_URL}/teams/${teamId}/results`, {
+  createTeamResult: async (teamId: string, result: ResultPayload) =>
+    request<CompetitionResult>(`/teams/${teamId}/results`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(result),
-    });
-    if (!res.ok) throw new Error("Failed to create result");
-    return res.json();
-  },
+    }),
 
-  getChampionships: async () => {
-    const res = await fetch(`${API_URL}/championships`);
-    if (!res.ok) throw new Error("Failed to fetch championships");
-    return res.json() as Promise<Championship[]>;
-  },
+  updateTeamResult: async (teamId: string, resultId: string, result: ResultPayload) =>
+    request<CompetitionResult>(`/teams/${teamId}/results/${resultId}`, {
+      method: "PUT",
+      body: JSON.stringify(result),
+    }),
 
-  createChampionship: async (nome: string) => {
-    const res = await fetch(`${API_URL}/championships`, {
+  deleteTeamResult: async (teamId: string, resultId: string) =>
+    request<void>(`/teams/${teamId}/results/${resultId}`, { method: "DELETE" }),
+
+  getChampionships: async () => request<Championship[]>("/championships"),
+
+  createChampionship: async (nome: string) =>
+    request<Championship>("/championships", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ nome }),
-    });
-    if (!res.ok) throw new Error("Failed to create championship");
-    return res.json() as Promise<Championship>;
-  },
+    }),
 
-  deleteChampionship: async (id: string) => {
-    const res = await fetch(`${API_URL}/championships/${id}`, {
-      method: "DELETE",
-    });
-    if (!res.ok) throw new Error("Failed to delete championship");
-  },
-
-  updateTeamResult: async (teamId: string, resultId: string, result: Record<string, unknown>) => {
-    const res = await fetch(`${API_URL}/teams/${teamId}/results/${resultId}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(result),
-    });
-    if (!res.ok) throw new Error("Failed to update result");
-    return res.json();
-  },
-
-  deleteTeamResult: async (teamId: string, resultId: string) => {
-    const res = await fetch(`${API_URL}/teams/${teamId}/results/${resultId}`, {
-      method: "DELETE",
-    });
-    if (!res.ok) throw new Error("Failed to delete result");
-  },
+  deleteChampionship: async (id: string) =>
+    request<void>(`/championships/${id}`, { method: "DELETE" }),
 
   uploadTeamLogo: async (teamId: string, file: File) => {
     const formData = new FormData();
     formData.append("file", file);
-
-    const res = await fetch(`${API_URL}/teams/${teamId}/logo`, {
+    return request<{ LogoUrl: string }>(`/teams/${teamId}/logo`, {
       method: "POST",
       body: formData,
     });
-    if (!res.ok) throw new Error("Failed to upload logo");
-    return res.json();
   },
 };

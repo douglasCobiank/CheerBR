@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { useTeams } from "@/lib/teams-store";
+import { countBy } from "@/lib/utils";
 import {
   Bar,
   BarChart,
@@ -32,35 +33,22 @@ export const Route = createFileRoute("/dashboard")({
 function DashboardPage() {
   const { teams = [] } = useTeams();
 
-  const byStatus = useMemo(() => {
-    const m: Record<string, number> = {};
-    teams.forEach((t) => (m[t.status] = (m[t.status] || 0) + 1));
-    return Object.entries(m).map(([name, value]) => ({ name, value }));
-  }, [teams]);
+  const byStatus = useMemo(() => countBy(teams, (t) => t.status), [teams]);
 
-  const byCategoria = useMemo(() => {
-    const m: Record<string, number> = {};
-    teams.forEach((t) => (m[t.categoria] = (m[t.categoria] || 0) + 1));
-    return Object.entries(m).map(([name, value]) => ({ name, value }));
-  }, [teams]);
+  const byCategoria = useMemo(() => countBy(teams, (t) => t.categoria), [teams]);
 
-  const byCidade = useMemo(() => {
-    const m: Record<string, number> = {};
-    teams.forEach((t) => (m[t.cidade] = (m[t.cidade] || 0) + 1));
-    return Object.entries(m)
-      .map(([name, value]) => ({ name, value }))
-      .sort((a, b) => b.value - a.value)
-      .slice(0, 8);
-  }, [teams]);
+  const byCidade = useMemo(
+    () =>
+      countBy(teams, (t) => t.cidade)
+        .sort((a, b) => b.value - a.value)
+        .slice(0, 8),
+    [teams],
+  );
 
-  const byNivel = useMemo(() => {
-    const m: Record<string, number> = {};
-    teams.forEach((t) => {
-      const k = t.nivel ? `Nível ${t.nivel}` : "Sem nível";
-      m[k] = (m[k] || 0) + 1;
-    });
-    return Object.entries(m).map(([name, value]) => ({ name, value }));
-  }, [teams]);
+  const byNivel = useMemo(
+    () => countBy(teams, (t) => (t.nivel ? `Nível ${t.nivel}` : "Sem nível")),
+    [teams],
+  );
 
   const avgScore = Math.round(teams.reduce((s, t) => s + t.score, 0) / Math.max(teams.length, 1));
 

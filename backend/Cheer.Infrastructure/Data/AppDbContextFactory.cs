@@ -9,8 +9,11 @@ public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
     {
         var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
 
-        optionsBuilder.UseNpgsql(
-            "Host=dpg-d8ro3ie7r5hc73ej03d0-a.oregon-postgres.render.com;Database=cheer_br_ranking;Username=cheer_br_ranking_user;Password=qF6z4mEtPakJSPhCKWkpqPyeqYffWIq5;SSL Mode=Require;Trust Server Certificate=true");
+        var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL")
+            ?? Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")
+            ?? "Host=localhost;Port=5432;Database=cheerbr;Username=cheerbr;Password=CHANGE_ME;Include Error Detail=true";
+
+        optionsBuilder.UseNpgsql(connectionString);
 
         return new AppDbContext(optionsBuilder.Options);
     }

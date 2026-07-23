@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Cheer.Application.DTOs
 {
     public class ChampionshipDto
@@ -8,6 +10,8 @@ namespace Cheer.Application.DTOs
 
     public class CreateChampionshipDto
     {
+        [Required(ErrorMessage = "Nome é obrigatório")]
+        [StringLength(200, ErrorMessage = "Nome não pode exceder 200 caracteres")]
         public required string Nome { get; set; }
     }
 }

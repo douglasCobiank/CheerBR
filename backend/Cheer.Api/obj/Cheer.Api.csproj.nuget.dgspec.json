@@ -1,20 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Api/Cheer.Api.csproj": {}
+    "/Users/douglascobiank/CheerBR/backend/Cheer.Api/Cheer.Api.csproj": {}
   },
   "projects": {
-    "/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Api/Cheer.Api.csproj": {
+    "/Users/douglascobiank/CheerBR/backend/Cheer.Api/Cheer.Api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Api/Cheer.Api.csproj",
+        "projectUniqueName": "/Users/douglascobiank/CheerBR/backend/Cheer.Api/Cheer.Api.csproj",
         "projectName": "Cheer.Api",
-        "projectPath": "/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Api/Cheer.Api.csproj",
+        "projectPath": "/Users/douglascobiank/CheerBR/backend/Cheer.Api/Cheer.Api.csproj",
         "packagesPath": "/Users/douglascobiank/.nuget/packages/",
-        "outputPath": "/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Api/obj/",
+        "outputPath": "/Users/douglascobiank/CheerBR/backend/Cheer.Api/obj/",
         "projectStyle": "PackageReference",
-        "configFilePaths": ["/Users/douglascobiank/.nuget/NuGet/NuGet.Config"],
-        "originalTargetFrameworks": ["net10.0"],
+        "configFilePaths": [
+          "/Users/douglascobiank/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net10.0"
+        ],
         "sources": {
           "https://api.nuget.org/v3/index.json": {}
         },
@@ -23,17 +27,19 @@
             "framework": "net10.0",
             "targetAlias": "net10.0",
             "projectReferences": {
-              "/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Application/Cheer.Application.csproj": {
-                "projectPath": "/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Application/Cheer.Application.csproj"
+              "/Users/douglascobiank/CheerBR/backend/Cheer.Application/Cheer.Application.csproj": {
+                "projectPath": "/Users/douglascobiank/CheerBR/backend/Cheer.Application/Cheer.Application.csproj"
               },
-              "/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Infrastructure/Cheer.Infrastructure.csproj": {
-                "projectPath": "/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Infrastructure/Cheer.Infrastructure.csproj"
+              "/Users/douglascobiank/CheerBR/backend/Cheer.Infrastructure/Cheer.Infrastructure.csproj": {
+                "projectPath": "/Users/douglascobiank/CheerBR/backend/Cheer.Infrastructure/Cheer.Infrastructure.csproj"
               }
             }
           }
         },
         "warningProperties": {
-          "warnAsError": ["NU1605"]
+          "warnAsError": [
+            "NU1605"
+          ]
         },
         "restoreAuditProperties": {
           "enableAudit": "true",
@@ -66,7 +72,15 @@
               "version": "[10.2.1, )"
             }
           },
-          "imports": ["net461", "net462", "net47", "net471", "net472", "net48", "net481"],
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
           "assetTargetFallback": true,
           "warn": true,
           "frameworkReferences": {
@@ -495,17 +509,21 @@
         }
       }
     },
-    "/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Application/Cheer.Application.csproj": {
+    "/Users/douglascobiank/CheerBR/backend/Cheer.Application/Cheer.Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Application/Cheer.Application.csproj",
+        "projectUniqueName": "/Users/douglascobiank/CheerBR/backend/Cheer.Application/Cheer.Application.csproj",
         "projectName": "Cheer.Application",
-        "projectPath": "/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Application/Cheer.Application.csproj",
+        "projectPath": "/Users/douglascobiank/CheerBR/backend/Cheer.Application/Cheer.Application.csproj",
         "packagesPath": "/Users/douglascobiank/.nuget/packages/",
-        "outputPath": "/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Application/obj/",
+        "outputPath": "/Users/douglascobiank/CheerBR/backend/Cheer.Application/obj/",
         "projectStyle": "PackageReference",
-        "configFilePaths": ["/Users/douglascobiank/.nuget/NuGet/NuGet.Config"],
-        "originalTargetFrameworks": ["net10.0"],
+        "configFilePaths": [
+          "/Users/douglascobiank/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net10.0"
+        ],
         "sources": {
           "https://api.nuget.org/v3/index.json": {}
         },
@@ -514,14 +532,16 @@
             "framework": "net10.0",
             "targetAlias": "net10.0",
             "projectReferences": {
-              "/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Domain/Cheer.Domain.csproj": {
-                "projectPath": "/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Domain/Cheer.Domain.csproj"
+              "/Users/douglascobiank/CheerBR/backend/Cheer.Domain/Cheer.Domain.csproj": {
+                "projectPath": "/Users/douglascobiank/CheerBR/backend/Cheer.Domain/Cheer.Domain.csproj"
               }
             }
           }
         },
         "warningProperties": {
-          "warnAsError": ["NU1605"]
+          "warnAsError": [
+            "NU1605"
+          ]
         },
         "restoreAuditProperties": {
           "enableAudit": "true",
@@ -534,7 +554,15 @@
         "net10.0": {
           "framework": "net10.0",
           "targetAlias": "net10.0",
-          "imports": ["net461", "net462", "net47", "net471", "net472", "net48", "net481"],
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
           "assetTargetFallback": true,
           "warn": true,
           "frameworkReferences": {
@@ -820,17 +848,21 @@
         }
       }
     },
-    "/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Domain/Cheer.Domain.csproj": {
+    "/Users/douglascobiank/CheerBR/backend/Cheer.Domain/Cheer.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Domain/Cheer.Domain.csproj",
+        "projectUniqueName": "/Users/douglascobiank/CheerBR/backend/Cheer.Domain/Cheer.Domain.csproj",
         "projectName": "Cheer.Domain",
-        "projectPath": "/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Domain/Cheer.Domain.csproj",
+        "projectPath": "/Users/douglascobiank/CheerBR/backend/Cheer.Domain/Cheer.Domain.csproj",
         "packagesPath": "/Users/douglascobiank/.nuget/packages/",
-        "outputPath": "/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Domain/obj/",
+        "outputPath": "/Users/douglascobiank/CheerBR/backend/Cheer.Domain/obj/",
         "projectStyle": "PackageReference",
-        "configFilePaths": ["/Users/douglascobiank/.nuget/NuGet/NuGet.Config"],
-        "originalTargetFrameworks": ["net10.0"],
+        "configFilePaths": [
+          "/Users/douglascobiank/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net10.0"
+        ],
         "sources": {
           "https://api.nuget.org/v3/index.json": {}
         },
@@ -842,7 +874,9 @@
           }
         },
         "warningProperties": {
-          "warnAsError": ["NU1605"]
+          "warnAsError": [
+            "NU1605"
+          ]
         },
         "restoreAuditProperties": {
           "enableAudit": "true",
@@ -855,7 +889,15 @@
         "net10.0": {
           "framework": "net10.0",
           "targetAlias": "net10.0",
-          "imports": ["net461", "net462", "net47", "net471", "net472", "net48", "net481"],
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
           "assetTargetFallback": true,
           "warn": true,
           "frameworkReferences": {
@@ -1141,17 +1183,21 @@
         }
       }
     },
-    "/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Infrastructure/Cheer.Infrastructure.csproj": {
+    "/Users/douglascobiank/CheerBR/backend/Cheer.Infrastructure/Cheer.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Infrastructure/Cheer.Infrastructure.csproj",
+        "projectUniqueName": "/Users/douglascobiank/CheerBR/backend/Cheer.Infrastructure/Cheer.Infrastructure.csproj",
         "projectName": "Cheer.Infrastructure",
-        "projectPath": "/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Infrastructure/Cheer.Infrastructure.csproj",
+        "projectPath": "/Users/douglascobiank/CheerBR/backend/Cheer.Infrastructure/Cheer.Infrastructure.csproj",
         "packagesPath": "/Users/douglascobiank/.nuget/packages/",
-        "outputPath": "/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Infrastructure/obj/",
+        "outputPath": "/Users/douglascobiank/CheerBR/backend/Cheer.Infrastructure/obj/",
         "projectStyle": "PackageReference",
-        "configFilePaths": ["/Users/douglascobiank/.nuget/NuGet/NuGet.Config"],
-        "originalTargetFrameworks": ["net10.0"],
+        "configFilePaths": [
+          "/Users/douglascobiank/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net10.0"
+        ],
         "sources": {
           "https://api.nuget.org/v3/index.json": {}
         },
@@ -1160,14 +1206,16 @@
             "framework": "net10.0",
             "targetAlias": "net10.0",
             "projectReferences": {
-              "/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Domain/Cheer.Domain.csproj": {
-                "projectPath": "/Users/douglascobiank/Downloads/cheerleading-app/backend/Cheer.Domain/Cheer.Domain.csproj"
+              "/Users/douglascobiank/CheerBR/backend/Cheer.Domain/Cheer.Domain.csproj": {
+                "projectPath": "/Users/douglascobiank/CheerBR/backend/Cheer.Domain/Cheer.Domain.csproj"
               }
             }
           }
         },
         "warningProperties": {
-          "warnAsError": ["NU1605"]
+          "warnAsError": [
+            "NU1605"
+          ]
         },
         "restoreAuditProperties": {
           "enableAudit": "true",
@@ -1187,16 +1235,20 @@
               "target": "Package",
               "version": "[10.0.9, )"
             },
-            "Microsoft.EntityFrameworkCore.Sqlite": {
-              "target": "Package",
-              "version": "[10.0.9, )"
-            },
             "Npgsql.EntityFrameworkCore.PostgreSQL": {
               "target": "Package",
               "version": "[10.0.2, )"
             }
           },
-          "imports": ["net461", "net462", "net47", "net471", "net472", "net48", "net481"],
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
           "assetTargetFallback": true,
           "warn": true,
           "frameworkReferences": {

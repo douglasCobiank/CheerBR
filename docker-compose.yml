@@ -1,0 +1,55 @@
+# ===================================================================
+# CheerBR - ambiente de desenvolvimento local
+#
+# Subir apenas o PostgreSQL (backend .NET roda via `dotnet run`):
+#   docker compose up -d postgres
+#
+# Subir PostgreSQL + backend em container:
+#   docker compose up -d --build
+#
+# Variaveis: copie .env.example para .env e ajuste os valores.
+# ===================================================================
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: cheerbr-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-cheerbr}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-cheerbr_password_troque_me}
+      POSTGRES_DB: ${POSTGRES_DB:-cheerbr}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - cheerbr_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-cheerbr} -d ${POSTGRES_DB:-cheerbr}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: cheerbr-api
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:10000
+      DATABASE_URL: Host=postgres;Port=5432;Database=${POSTGRES_DB:-cheerbr};Username=${POSTGRES_USER:-cheerbr};Password=${POSTGRES_PASSWORD:-cheerbr_password_troque_me};Include Error Detail=true
+      UPLOADS_PATH: /var/lib/cheerbr/uploads
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-}
+    ports:
+      - "10000:10000"
+    volumes:
+      - cheerbr_uploads:/var/lib/cheerbr/uploads
+
+volumes:
+  cheerbr_pgdata:
+  cheerbr_uploads:

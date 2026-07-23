@@ -1,21 +1,29 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import type { Team } from "./types";
+import type { Team, CompetitionResult } from "./types";
 import { api } from "./api";
 
-export function useTeams() {
+/**
+ * Invalida todas as query keys derivadas das equipes.
+ * Centraliza a logica de cache invalidation para evitar blocos
+ * triplicados de invalidateQueries nas paginas.
+ */
+export function useInvalidateAll() {
   const queryClient = useQueryClient();
+  return () => {
+    queryClient.invalidateQueries({ queryKey: ["teams"] });
+    queryClient.invalidateQueries({ queryKey: ["ranking"] });
+    queryClient.invalidateQueries({ queryKey: ["stats"] });
+  };
+}
+
+export function useTeams() {
+  const invalidateAll = useInvalidateAll();
 
   const teamsQuery = useQuery({
     queryKey: ["teams"],
     queryFn: () => api.getTeams(),
     initialData: [],
   });
-
-  const invalidateAll = () => {
-    queryClient.invalidateQueries({ queryKey: ["teams"] });
-    queryClient.invalidateQueries({ queryKey: ["ranking"] });
-    queryClient.invalidateQueries({ queryKey: ["stats"] });
-  };
 
   const addMutation = useMutation({
     mutationFn: api.createTeam,
@@ -47,31 +55,42 @@ export function useTeams() {
 }
 
 export function useTeamResults(teamId: string) {
-  const queryClient = useQueryClient();
+  const invalidateAll = useInvalidateAll();
 
   const addResultMutation = useMutation({
-    mutationFn: (data: Record<string, unknown>) => api.createTeamResult(teamId, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["teams"] });
-      queryClient.invalidateQueries({ queryKey: ["ranking"] });
-      queryClient.invalidateQueries({ queryKey: ["stats"] });
-    },
+    mutationFn: (data: Omit<CompetitionResult, "id">) => api.createTeamResult(teamId, data),
+    onSuccess: invalidateAll,
+  });
+
+  const updateResultMutation = useMutation({
+    mutationFn: ({ resultId, data }: { resultId: string; data: Omit<CompetitionResult, "id"> }) =>
+      api.updateTeamResult(teamId, resultId, data),
+    onSuccess: invalidateAll,
+  });
+
+  const deleteResultMutation = useMutation({
+    mutationFn: (resultId: string) => api.deleteTeamResult(teamId, resultId),
+    onSuccess: invalidateAll,
   });
 
   return {
     addResult: addResultMutation.mutateAsync,
     isCreating: addResultMutation.isPending,
+
+    updateResult: updateResultMutation.mutateAsync,
+    isUpdating: updateResultMutation.isPending,
+
+    deleteResult: deleteResultMutation.mutateAsync,
+    isDeleting: deleteResultMutation.isPending,
   };
 }
 
 export function useUploadLogo(teamId: string) {
-  const queryClient = useQueryClient();
+  const invalidateAll = useInvalidateAll();
 
   const uploadMutation = useMutation({
     mutationFn: (file: File) => api.uploadTeamLogo(teamId, file),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["teams"] });
-    },
+    onSuccess: invalidateAll,
   });
 
   return {

@@ -14,20 +14,39 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Configure CORS
+var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
+                     ?? Array.Empty<string>();
+var corsEnv = Environment.GetEnvironmentVariable("CORS_ALLOWED_ORIGINS");
+if (allowedOrigins.Length == 0 && !string.IsNullOrWhiteSpace(corsEnv))
+{
+    allowedOrigins = corsEnv.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+}
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.AllowAnyOrigin()
-              .AllowAnyHeader()
-              .AllowAnyMethod();
+        if (allowedOrigins.Length == 0)
+        {
+            policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+        }
+        else
+        {
+            policy.WithOrigins(allowedOrigins)
+                  .AllowAnyHeader()
+                  .AllowAnyMethod()
+                  .SetIsOriginAllowedToAllowWildcardSubdomains();
+        }
     });
 });
 
 // Database
+var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL")
+                       ?? builder.Configuration.GetConnectionString("DefaultConnection")
+                       ?? throw new InvalidOperationException("Connection string 'DefaultConnection' or env var 'DATABASE_URL' must be configured.");
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(
-        builder.Configuration.GetConnectionString("DefaultConnection"),
+        connectionString,
         o => o.EnableRetryOnFailure(
             maxRetryCount: 5,
             maxRetryDelay: TimeSpan.FromSeconds(10),
@@ -51,11 +70,10 @@ if (!app.Environment.IsProduction())
     app.UseHttpsRedirection();
 }
 
-// Pasta de uploads
-var uploadsFolder = Path.Combine(
-    Directory.GetCurrentDirectory(),
-    "wwwroot",
-    "uploads");
+// Pasta de uploads (configurável via env var p/ volume persistente; fallback: wwwroot/uploads)
+var uploadsFolder = !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("UPLOADS_PATH"))
+    ? Environment.GetEnvironmentVariable("UPLOADS_PATH")!
+    : Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
 
 if (!Directory.Exists(uploadsFolder))
 {

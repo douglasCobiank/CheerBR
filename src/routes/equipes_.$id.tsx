@@ -1,14 +1,19 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import type { Team, CompetitionResult } from "@/lib/types";
 import { useTeams, useTeamResults, useUploadLogo } from "@/lib/teams-store";
 import { TeamCard } from "@/components/team-card";
 import { Field } from "@/components/ui/field";
 import { Modal } from "@/components/modal";
 import { ArrowLeft, Edit, Save, Plus, X, Image as ImageIcon, Trash2 } from "lucide-react";
-import { CATEGORIAS, STATUSES, NIVEL_MAX, IMPORTANCIAS, TIPOS_CATEGORIA, INPUT_CLASS } from "@/lib/constants";
-import { api } from "@/lib/api";
+import {
+  CATEGORIAS,
+  STATUSES,
+  IMPORTANCIAS,
+  TIPOS_CATEGORIA,
+  INPUT_CLASS,
+  NIVEIS,
+} from "@/lib/constants";
 import { ResultForm, type ResultFormData } from "@/components/result-form";
 
 export const Route = createFileRoute("/equipes_/$id")({
@@ -18,9 +23,8 @@ export const Route = createFileRoute("/equipes_/$id")({
 function TeamDetailsPage() {
   const { id } = Route.useParams();
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const { teams = [], updateTeam, isLoading } = useTeams();
-  const { addResult } = useTeamResults(id);
+  const { addResult, updateResult, deleteResult } = useTeamResults(id);
   const { uploadLogo, isUploading } = useUploadLogo(id);
 
   const team = teams.find((t) => t.id === id);
@@ -50,33 +54,22 @@ function TeamDetailsPage() {
   };
 
   const handleAddResult = async (resultData: ResultFormData) => {
-    await addResult(resultData as unknown as Record<string, unknown>);
+    await addResult(resultData);
     setOpenResultModal(false);
   };
 
   const handleUpdateResult = async (resultData: ResultFormData) => {
     if (!editingResult) return;
-    await api.updateTeamResult(
-      id,
-      editingResult.id,
-      resultData as unknown as Record<string, unknown>,
-    );
-    queryClient.invalidateQueries({ queryKey: ["teams"] });
-    queryClient.invalidateQueries({ queryKey: ["ranking"] });
-    queryClient.invalidateQueries({ queryKey: ["stats"] });
+    await updateResult({ resultId: editingResult.id, data: resultData });
     setEditingResult(null);
   };
 
   const handleDeleteResult = async (resultId: string) => {
     if (!confirm("Tem certeza que deseja excluir este resultado?")) return;
-    await api.deleteTeamResult(id, resultId);
-    queryClient.invalidateQueries({ queryKey: ["teams"] });
-    queryClient.invalidateQueries({ queryKey: ["ranking"] });
-    queryClient.invalidateQueries({ queryKey: ["stats"] });
+    await deleteResult(resultId);
   };
 
-  const results: CompetitionResult[] = ((team as Record<string, unknown>).results ||
-    []) as CompetitionResult[];
+  const results: CompetitionResult[] = team.results ?? [];
   results.sort((a, b) => {
     if (b.ano !== a.ano) return b.ano - a.ano;
     const impOrder = (imp: string) => {
@@ -147,7 +140,7 @@ function TeamDetailsPage() {
                         const file = e.target.files?.[0];
                         if (file) {
                           const res = await uploadLogo(file);
-                          setForm({ ...form, logoUrl: res.logoUrl });
+                          setForm({ ...form, logoUrl: res.LogoUrl });
                         }
                       }}
                       className="cursor-pointer text-sm file:mr-4 file:rounded-full file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-semibold file:text-primary-foreground hover:file:opacity-90"
@@ -203,11 +196,13 @@ function TeamDetailsPage() {
                 <Field label="Nível">
                   <select
                     value={form.nivel ?? ""}
-                    onChange={(e) => setForm({ ...form, nivel: e.target.value ? Number(e.target.value) : null })}
+                    onChange={(e) =>
+                      setForm({ ...form, nivel: e.target.value ? Number(e.target.value) : null })
+                    }
                     className={INPUT_CLASS}
                   >
                     <option value="">—</option>
-                    {Array.from({ length: NIVEL_MAX }, (_, i) => i + 1).map((n) => (
+                    {NIVEIS.map((n) => (
                       <option key={n} value={n}>
                         Nível {n}
                       </option>

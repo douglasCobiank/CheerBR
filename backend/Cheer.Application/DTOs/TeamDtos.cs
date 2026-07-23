@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Cheer.Application.DTOs
 {
@@ -23,6 +23,7 @@ namespace Cheer.Application.DTOs
 
     public class UpdateTeamDto : CreateTeamDto
     {
+        [Required(ErrorMessage = "Id é obrigatório")]
         public required string Id { get; set; }
     }
 }

@@ -30,3 +30,26 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Secrets / env
+.env
+.env.*
+!.env.example
+.dev.vars
+
+# .NET build artifacts
+bin/
+obj/
+*.user
+*.suo
+*.Cache
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Uploads (logos) - nunca commitar binários de upload
+**/wwwroot/uploads/*
+!**/wwwroot/uploads/.gitkeep
+
+# Postgres data volume (local dev)
+.pgdata/

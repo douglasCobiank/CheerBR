@@ -105,33 +105,53 @@ namespace Cheer.Api.Controllers
         }
 
         [HttpPost("{id}/logo")]
+        [RequestSizeLimit(5_000_000)] // 5 MB max
         public async Task<ActionResult<TeamDto>> UploadLogo(string id, IFormFile file)
         {
             if (file == null || file.Length == 0)
                 return BadRequest("No file uploaded");
 
+            // Validacao de tamanho (defensiva, dentro do limite do atributo)
+            if (file.Length > 5_000_000)
+                return BadRequest("Logo não pode exceder 5 MB");
+
+            // Validacao de tipo (Content-Type) e extensao
+            var allowedTypes = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "image/jpeg", "image/png", "image/webp", "image/gif"
+            };
+            var allowedExtensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                ".jpg", ".jpeg", ".png", ".webp", ".gif"
+            };
+
+            var contentType = file.ContentType;
+            var extension = Path.GetExtension(file.FileName);
+            if (!allowedTypes.Contains(contentType) || !allowedExtensions.Contains(extension))
+                return BadRequest("Formato de imagem inválido. Aceitos: JPG, PNG, WEBP, GIF.");
+
             var team = await _teamService.GetTeamByIdAsync(id);
             if (team == null) return NotFound("Team not found");
 
-            // Define the path
-            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+            // Pasta de uploads (env var UPLOADS_PATH configurada em Program.cs; fallback wwwroot/uploads)
+            var uploadsFolder = !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("UPLOADS_PATH"))
+                ? Environment.GetEnvironmentVariable("UPLOADS_PATH")!
+                : Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
             if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
 
-            // Create a unique filename
-            var fileName = $"{id}_{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+            // Nome seguro (id + guid + extensao validada). Nao confiar no nome do arquivo do client.
+            var safeExtension = allowedExtensions.First(e => e.Equals(extension, StringComparison.OrdinalIgnoreCase));
+            var fileName = $"{id}_{Guid.NewGuid():N}{safeExtension}";
             var filePath = Path.Combine(uploadsFolder, fileName);
 
-            // Save the file
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 await file.CopyToAsync(stream);
             }
 
-            // The URL to access the file
             var request = HttpContext.Request;
             var logoUrl = $"{request.Scheme}://{request.Host}/uploads/{fileName}";
 
-            // Update team
             var updateDto = new UpdateTeamDto
             {
                 Id = team.Id,
