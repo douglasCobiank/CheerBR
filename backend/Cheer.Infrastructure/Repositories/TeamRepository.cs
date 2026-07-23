@@ -66,7 +66,7 @@ namespace Cheer.Infrastructure.Repositories
 
         public async Task<IEnumerable<Team>> GetRankingAsync(string? categoria = null)
         {
-            var query = _context.Teams.AsQueryable();
+            var query = _context.Teams.Include(t => t.Results).AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(categoria))
                 query = query.Where(t => t.Categoria == categoria);
