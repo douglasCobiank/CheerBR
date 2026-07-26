@@ -1,5 +1,7 @@
+using Cheer.Api.Auth;
 using Cheer.Api.ExceptionHandling;
 using Cheer.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Cheer.Application.Services;
 using Cheer.Domain.Interfaces;
 using Cheer.Infrastructure.Data;
@@ -7,6 +9,7 @@ using Cheer.Infrastructure.Repositories;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.AspNetCore.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +30,37 @@ builder.Services.AddProblemDetails(options =>
 // Handler custom: mapeia excecoes de dominio (ex: NotFoundException) para
 // codigos HTTP corretos (404) em vez de 500 generico.
 builder.Services.AddExceptionHandler<NotFoundExceptionHandler>();
+
+// Autenticacao via header X-API-Key e AuthorizationHandler associado.
+// Veja Auth/ApiKeyAuthenticationHandler.cs para os detalhes.
+builder.Services
+    .AddAuthentication(ApiKeyAuthenticationHandler.SchemeName)
+    .AddScheme<ApiKeyAuthenticationOptions, ApiKeyAuthenticationHandler>(
+        ApiKeyAuthenticationHandler.SchemeName,
+        options =>
+        {
+            options.ExpectedApiKey =
+                builder.Configuration["ADMIN_API_KEY"]
+                ?? Environment.GetEnvironmentVariable("ADMIN_API_KEY")
+                ?? string.Empty;
+        });
+
+builder.Services.AddAuthorizationBuilder()
+    .AddApiKeyAuthorization();
+
+// Rate limiting: janela fixa por IP para proteger o endpoint de upload de logos
+// (5 MB por request, sem auth forte na camada de CDN). 5 requests permitidos
+// a cada 30 segundos por IP; excedente retorna 429.
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.AddFixedWindowLimiter("logo", opt =>
+    {
+        opt.PermitLimit = 5;
+        opt.Window = TimeSpan.FromSeconds(30);
+        opt.QueueLimit = 0;
+    });
+});
 
 // Configure CORS
 var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
@@ -126,6 +160,12 @@ app.UseStaticFiles(new StaticFileOptions
 // CORS
 app.UseCors();
 
+// Rate limiting (antes de UseAuthorization para rejeitar cedo)
+app.UseRateLimiter();
+
+// Pipeline de autorizacao: Authentication identifica o caller via X-API-Key.
+// Authorization valida a policy "ApiKey" em todos os endpoints [Authorize].
+app.UseAuthentication();
 app.UseAuthorization();
 
 // Healthcheck

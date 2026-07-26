@@ -19,7 +19,12 @@ namespace Cheer.Infrastructure.Repositories
 
         public async Task<IEnumerable<Team>> GetAllAsync(string? categoria = null, string? cidade = null, string? q = null, int? nivel = null)
         {
-            var query = _context.Teams.Include(t => t.Results).AsQueryable();
+            // AsNoTracking: read-only, evita overhead de change-tracking no
+            // DbContext (memoria + diff por entidade carregada).
+            var query = _context.Teams
+                .Include(t => t.Results)
+                .AsNoTracking()
+                .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(categoria))
                 query = query.Where(t => t.Categoria == categoria);
@@ -28,7 +33,9 @@ namespace Cheer.Infrastructure.Repositories
                 query = query.Where(t => t.Cidade == cidade);
 
             if (!string.IsNullOrWhiteSpace(q))
-                query = query.Where(t => EF.Functions.Like(t.Nome, $"%{q}%") || EF.Functions.Like(t.Programa, $"%{q}%"));
+                query = query.Where(t =>
+                    EF.Functions.ILike(t.Nome, $"%{q}%")
+                    || (t.Programa != null && EF.Functions.ILike(t.Programa, $"%{q}%")));
 
             if (nivel.HasValue)
                 query = query.Where(t => t.Nivel == nivel.Value);
@@ -38,7 +45,12 @@ namespace Cheer.Infrastructure.Repositories
 
         public async Task<Team?> GetByIdAsync(string id)
         {
-            return await _context.Teams.Include(t => t.Results).FirstOrDefaultAsync(t => t.Id == id);
+            // AsNoTracking: read-only. Service chama CalculateScore mas nao muta
+            // a entidade (score e recalculado defensivamente a cada leitura).
+            return await _context.Teams
+                .Include(t => t.Results)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(t => t.Id == id);
         }
 
         public async Task<Team> AddAsync(Team team)
@@ -66,7 +78,10 @@ namespace Cheer.Infrastructure.Repositories
 
         public async Task<IEnumerable<Team>> GetRankingAsync(string? categoria = null)
         {
-            var query = _context.Teams.Include(t => t.Results).AsQueryable();
+            var query = _context.Teams
+                .Include(t => t.Results)
+                .AsNoTracking()
+                .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(categoria))
                 query = query.Where(t => t.Categoria == categoria);

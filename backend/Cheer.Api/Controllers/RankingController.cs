@@ -1,5 +1,7 @@
+using Cheer.Api.Auth;
 using Cheer.Application.DTOs;
 using Cheer.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cheer.Api.Controllers;
@@ -16,6 +18,7 @@ public class RankingController : ControllerBase
     }
 
     [HttpGet]
+    [AllowAnonymous]
     public async Task<ActionResult<IEnumerable<TeamDto>>> GetRanking([FromQuery] string? categoria)
     {
         var ranking = await _teamService.GetRankingAsync(categoria);

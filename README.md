@@ -151,13 +151,13 @@ npm run dev                    # http://localhost:5173
 
 Scripts disponíveis:
 
-| Comando             | Descrição                  |
-| ------------------- | -------------------------- |
-| `npm run dev`       | Dev server (HMR)           |
-| `npm run build`     | Build de produção          |
-| `npm run preview`   | Preview do build           |
-| `npm run lint`      | ESLint + Prettier          |
-| `npm run format`    | Prettier --write           |
+| Comando           | Descrição         |
+| ----------------- | ----------------- |
+| `npm run dev`     | Dev server (HMR)  |
+| `npm run build`   | Build de produção |
+| `npm run preview` | Preview do build  |
+| `npm run lint`    | ESLint + Prettier |
+| `npm run format`  | Prettier --write  |
 
 ---
 
@@ -180,24 +180,24 @@ Scripts disponíveis:
 
 ## Endpoints da API
 
-| Método | Rota                              | Descrição                  |
-| ------ | --------------------------------- | -------------------------- |
-| GET    | `/api/teams`                      | Lista equipes (filtros `q`) |
-| GET    | `/api/teams/{id}`                | Detalhe da equipe          |
-| POST   | `/api/teams`                      | Criar equipe               |
-| PUT    | `/api/teams/{id}`                | Atualizar equipe           |
-| DELETE | `/api/teams/{id}`                | Remover equipe             |
-| POST   | `/api/teams/{id}/results`        | Adicionar resultado        |
-| PUT    | `/api/teams/{id}/results/{rid}`  | Editar resultado           |
-| DELETE | `/api/teams/{id}/results/{rid}`  | Remover resultado          |
-| POST   | `/api/teams/{id}/logo`           | Upload de logo (≤ 5 MB)    |
-| GET    | `/api/ranking`                   | Ranking (filtro `categoria`) |
-| GET    | `/api/stats/overview`            | Estatísticas do dashboard  |
-| GET    | `/api/championships`             | Lista campeonatos          |
-| POST   | `/api/championships`             | Criar campeonato           |
-| PUT    | `/api/championships/{id}`         | Atualizar campeonato       |
-| DELETE | `/api/championships/{id}`         | Remover campeonato         |
-| GET    | `/`                              | Healthcheck                |
+| Método | Rota                            | Descrição                    |
+| ------ | ------------------------------- | ---------------------------- |
+| GET    | `/api/teams`                    | Lista equipes (filtros `q`)  |
+| GET    | `/api/teams/{id}`               | Detalhe da equipe            |
+| POST   | `/api/teams`                    | Criar equipe                 |
+| PUT    | `/api/teams/{id}`               | Atualizar equipe             |
+| DELETE | `/api/teams/{id}`               | Remover equipe               |
+| POST   | `/api/teams/{id}/results`       | Adicionar resultado          |
+| PUT    | `/api/teams/{id}/results/{rid}` | Editar resultado             |
+| DELETE | `/api/teams/{id}/results/{rid}` | Remover resultado            |
+| POST   | `/api/teams/{id}/logo`          | Upload de logo (≤ 5 MB)      |
+| GET    | `/api/ranking`                  | Ranking (filtro `categoria`) |
+| GET    | `/api/stats/overview`           | Estatísticas do dashboard    |
+| GET    | `/api/championships`            | Lista campeonatos            |
+| POST   | `/api/championships`            | Criar campeonato             |
+| PUT    | `/api/championships/{id}`       | Atualizar campeonato         |
+| DELETE | `/api/championships/{id}`       | Remover campeonato           |
+| GET    | `/`                             | Healthcheck                  |
 
 ---
 
@@ -236,16 +236,16 @@ Veja `backend/Cheer.Domain/Constants/ScoreConstants.cs` e
 
 Veja `.env.example` para a lista completa. Resumo:
 
-| Variável              | Onde lê           | Default                                    |
-| --------------------- | ----------------- | ------------------------------------------ |
-| `POSTGRES_USER`       | docker-compose    | `cheerbr`                                  |
-| `POSTGRES_PASSWORD`   | docker-compose    | `cheerbr_password_troque_me`               |
-| `POSTGRES_DB`         | docker-compose    | `cheerbr`                                  |
-| `POSTGRES_PORT`       | docker-compose    | `5432`                                     |
-| `DATABASE_URL`        | backend (Program) | — (obrigatório em produção)                |
-| `UPLOADS_PATH`        | backend           | `wwwroot/uploads`                          |
-| `CORS_ALLOWED_ORIGINS`| backend           | vazio → `AllowAnyOrigin`                   |
-| `VITE_API_URL`        | frontend          | `http://localhost:10000/api`               |
+| Variável               | Onde lê           | Default                      |
+| ---------------------- | ----------------- | ---------------------------- |
+| `POSTGRES_USER`        | docker-compose    | `cheerbr`                    |
+| `POSTGRES_PASSWORD`    | docker-compose    | `cheerbr_password_troque_me` |
+| `POSTGRES_DB`          | docker-compose    | `cheerbr`                    |
+| `POSTGRES_PORT`        | docker-compose    | `5432`                       |
+| `DATABASE_URL`         | backend (Program) | — (obrigatório em produção)  |
+| `UPLOADS_PATH`         | backend           | `wwwroot/uploads`            |
+| `CORS_ALLOWED_ORIGINS` | backend           | vazio → `AllowAnyOrigin`     |
+| `VITE_API_URL`         | frontend          | `http://localhost:10000/api` |
 
 ---
 

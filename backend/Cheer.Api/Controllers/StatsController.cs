@@ -1,5 +1,7 @@
+using Cheer.Api.Auth;
 using Cheer.Application.DTOs;
 using Cheer.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cheer.Api.Controllers;
@@ -16,6 +18,7 @@ public class StatsController : ControllerBase
     }
 
     [HttpGet("overview")]
+    [AllowAnonymous]
     public async Task<ActionResult<StatsOverviewDto>> GetOverview()
     {
         var stats = await _teamService.GetStatsOverviewAsync();

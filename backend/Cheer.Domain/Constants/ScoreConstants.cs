@@ -31,6 +31,7 @@ public static class ScoreConstants
         { 3, 1.3 },
         { 4, 1.4 },
         { 5, 1.5 },
+        { 6, 1.6 },
     };
 
     public const double DefaultLevelWeight = 1.0;

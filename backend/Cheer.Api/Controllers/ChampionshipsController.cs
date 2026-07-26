@@ -1,5 +1,7 @@
+using Cheer.Api.Auth;
 using Cheer.Application.DTOs;
 using Cheer.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cheer.Api.Controllers;
@@ -16,6 +18,7 @@ public class ChampionshipsController : ControllerBase
     }
 
     [HttpGet]
+    [AllowAnonymous]
     public async Task<ActionResult<IEnumerable<ChampionshipDto>>> GetAll()
     {
         var championships = await _service.GetAllAsync();
@@ -23,6 +26,7 @@ public class ChampionshipsController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [AllowAnonymous]
     public async Task<ActionResult<ChampionshipDto>> GetById(string id)
     {
         var championship = await _service.GetByIdAsync(id);

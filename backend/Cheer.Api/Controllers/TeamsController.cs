@@ -1,11 +1,16 @@
+using Cheer.Api.Auth;
 using Cheer.Application.DTOs;
 using Cheer.Application.Interfaces;
+using Cheer.Domain.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace Cheer.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize(Policy = ApiKeyAuthorizationExtensions.PolicyName)]
 public class TeamsController : ControllerBase
 {
     private readonly ITeamService _teamService;
@@ -18,6 +23,7 @@ public class TeamsController : ControllerBase
     }
 
     [HttpGet]
+    [AllowAnonymous]
     public async Task<ActionResult<IEnumerable<TeamDto>>> GetTeams(
         [FromQuery] string? categoria,
         [FromQuery] string? cidade,
@@ -29,6 +35,7 @@ public class TeamsController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [AllowAnonymous]
     public async Task<ActionResult<TeamDto>> GetTeam(string id)
     {
         var team = await _teamService.GetTeamByIdAsync(id);
@@ -81,6 +88,7 @@ public class TeamsController : ControllerBase
 
     [HttpPost("{id}/logo")]
     [RequestSizeLimit(5_000_000)] // 5 MB max no Kestrel
+    [EnableRateLimiting("logo")] // protege contra DoS de disco via IP (10 tokens / 20s)
     public async Task<ActionResult> UploadLogo(string id, IFormFile file)
     {
         if (file == null || file.Length == 0)
@@ -96,7 +104,7 @@ public class TeamsController : ControllerBase
             var logoUrl = await _teamService.SetLogoAsync(id, stream, file.ContentType, file.FileName, schemeHost);
             return Ok(new { LogoUrl = logoUrl });
         }
-        catch (Cheer.Domain.Exceptions.NotFoundException ex)
+        catch (NotFoundException ex)
         {
             _logger.LogWarning(ex, "Upload falhou: team nao encontrado");
             return NotFound(ex.Message);

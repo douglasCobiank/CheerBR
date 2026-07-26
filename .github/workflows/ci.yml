@@ -53,3 +53,6 @@ jobs:
 
       - name: Build
         run: dotnet build backend/Cheer.slnx --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test backend/Cheer.slnx --configuration Release --no-build --verbosity normal

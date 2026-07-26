@@ -3,4 +3,5 @@
   <Project Path="Cheer.Application/Cheer.Application.csproj" />
   <Project Path="Cheer.Domain/Cheer.Domain.csproj" />
   <Project Path="Cheer.Infrastructure/Cheer.Infrastructure.csproj" />
+  <Project Path="Cheer.Domain.Tests/Cheer.Domain.Tests.csproj" />
 </Solution>

@@ -19,13 +19,13 @@ equipe, categoria disputada, e um **decaimento temporal** anual.
 
 ### Módulos funcionais
 
-| Módulo          | Descrição                                                                |
-| --------------- | ------------------------------------------------------------------------ |
-| **Equipes**     | CRUD completo de equipes; busca/filtro por nome/cidade/categoria/nível. |
-| **Resultados**  | CRUD de resultados (campeonatos) por equipe; recalcula o score ao mutar. |
-| **Ranking**     | Endpoint/API e página que ordena equipes por `Score` decrescente.        |
-| **Dashboard**   | Gráficos agregados (por status, categoria, cidade, nível) + score médio. |
-| **Campeonatos** | CRUD da entidade `Championship` (usada como dropdown ao lançar resultado). |
+| Módulo          | Descrição                                                                   |
+| --------------- | --------------------------------------------------------------------------- |
+| **Equipes**     | CRUD completo de equipes; busca/filtro por nome/cidade/categoria/nível.     |
+| **Resultados**  | CRUD de resultados (campeonatos) por equipe; recalcula o score ao mutar.    |
+| **Ranking**     | Endpoint/API e página que ordena equipes por `Score` decrescente.           |
+| **Dashboard**   | Gráficos agregados (por status, categoria, cidade, nível) + score médio.    |
+| **Campeonatos** | CRUD da entidade `Championship` (usada como dropdown ao lançar resultado).  |
 | **Upload**      | Upload de logo por equipe (disco local + URL persistida em `Team.LogoUrl`). |
 
 ### Regras de pontuação (ProCheer)
@@ -62,14 +62,14 @@ Score team é recalculado a cada mutação de resultado (add/update/delete).
 
 ### Tech stack
 
-| Camada          | Tecnologia                                                                              |
-| --------------- | --------------------------------------------------------------------------------------- |
+| Camada          | Tecnologia                                                                                             |
+| --------------- | ------------------------------------------------------------------------------------------------------ |
 | **Frontend**    | React 19, TypeScript, Vite 8, TanStack Router/Query/Start (SSR), Tailwind v4, shadcn/ui, Recharts, Zod |
-| **Backend**     | .NET 10 ASP.NET Core Web API, Swashbuckle (Swagger)                                      |
-| **ORM**         | Entity Framework Core 10 + provider `Npgsql.EntityFrameworkCore.PostgreSQL` 10.0.2     |
-| **Banco**       | PostgreSQL 16 (auto-hospedado via Docker; anteriormente, Render.com managed Postgres)   |
-| **Infra local** | Docker Compose (Postgres 16-alpine + backend .NET em container, ambos volumes nomeados) |
-| **Runtime**     | Kestrel (porta 10000), usuário `app` não-root no container                               |
+| **Backend**     | .NET 10 ASP.NET Core Web API, Swashbuckle (Swagger)                                                    |
+| **ORM**         | Entity Framework Core 10 + provider `Npgsql.EntityFrameworkCore.PostgreSQL` 10.0.2                     |
+| **Banco**       | PostgreSQL 16 (auto-hospedado via Docker; anteriormente, Render.com managed Postgres)                  |
+| **Infra local** | Docker Compose (Postgres 16-alpine + backend .NET em container, ambos volumes nomeados)                |
+| **Runtime**     | Kestrel (porta 10000), usuário `app` não-root no container                                             |
 
 ### Componentes e fluxo de dados
 
@@ -122,14 +122,15 @@ Score team é recalculado a cada mutação de resultado (add/update/delete).
 
 ### Camadas do backend (.NET)
 
-| Projeto                  | Responsabilidade                                                   |
-| ------------------------ | ------------------------------------------------------------------ |
-| `Cheer.Domain`           | Entidades (`Team`, `CompetitionResult`, `Championship`), `ScoreConstants`, interfaces (`ITeamRepository`, `IChampionshipRepository`). Zero dependências externas. |
-| `Cheer.Application`      | DTOs (com DataAnnotations), serviços (`TeamService`, `ChampionshipService`), mappings estáticos (`TeamMappings`). Contratos `ITeamService`/`IChampionshipService`. Zero NuGet. |
-| `Cheer.Infrastructure`   | EF Core: `AppDbContext`, `AppDbContextFactory` (design-time), repositórios (`TeamRepository`, `ChampionshipRepository`), migrations. Pacotes: `EFCore.Design`, `Npgsql.EFCore.PostgreSQL`. |
-| `Cheer.Api`              | Composição (`Program.cs`): controllers, Swagger, CORS configurável, `AddDbContext` com retry-on-failure, `UseStaticFiles` em `/uploads`, healthcheck. Pacotes: `OpenApi`, `EFCore.Design`, `Npgsql.EFCore.PostgreSQL`, `Swashbuckle`. |
+| Projeto                | Responsabilidade                                                                                                                                                                                                                      |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Cheer.Domain`         | Entidades (`Team`, `CompetitionResult`, `Championship`), `ScoreConstants`, interfaces (`ITeamRepository`, `IChampionshipRepository`). Zero dependências externas.                                                                     |
+| `Cheer.Application`    | DTOs (com DataAnnotations), serviços (`TeamService`, `ChampionshipService`), mappings estáticos (`TeamMappings`). Contratos `ITeamService`/`IChampionshipService`. Zero NuGet.                                                        |
+| `Cheer.Infrastructure` | EF Core: `AppDbContext`, `AppDbContextFactory` (design-time), repositórios (`TeamRepository`, `ChampionshipRepository`), migrations. Pacotes: `EFCore.Design`, `Npgsql.EFCore.PostgreSQL`.                                            |
+| `Cheer.Api`            | Composição (`Program.cs`): controllers, Swagger, CORS configurável, `AddDbContext` com retry-on-failure, `UseStaticFiles` em `/uploads`, healthcheck. Pacotes: `OpenApi`, `EFCore.Design`, `Npgsql.EFCore.PostgreSQL`, `Swashbuckle`. |
 
 **Injeção de dependência** (`Program.cs`):
+
 - `AppDbContext` → Scoped
 - `ITeamRepository`/`TeamRepository` → Scoped
 - `IChampionshipRepository`/`ChampionshipRepository` → Scoped
@@ -197,35 +198,35 @@ Score team é recalculado a cada mutação de resultado (add/update/delete).
 Base URL em produção: backend liga em `http://+:10000`. Em dev (fora Docker):
 `http://localhost:10000`. CORS deve incluir a origem do frontend.
 
-| Método | Rota                                | Controller / Action           | DTO entrada                     | Saída                              |
-| ------ | ----------------------------------- | ----------------------------- | ------------------------------- | ---------------------------------- |
-| GET    | `/`                                 | `Program.cs` inline           | —                               | `{ status, environment, time }`    |
-| GET    | `/api/teams[?categoria&cidade&q&nivel]` | `TeamsController.GetTeams`   | (query)                        | `TeamDto[]`                         |
-| GET    | `/api/teams/{id}`                   | `TeamsController.GetTeam`     | —                               | `TeamDto` / 404                     |
-| POST   | `/api/teams`                        | `TeamsController.CreateTeam`  | `CreateTeamDto`                  | `TeamDto` (201 + Location)         |
-| PUT    | `/api/teams/{id}`                   | `TeamsController.UpdateTeam`  | `UpdateTeamDto` (= Create+Id)    | 204 / 400 (id mismatch) / 404      |
-| DELETE | `/api/teams/{id}`                   | `TeamsController.DeleteTeam`   | —                               | 204                                 |
-| POST   | `/api/teams/{id}/results`           | `TeamsController.AddResult`    | `CreateCompetitionResultDto`     | `CompetitionResultDto` / 404       |
-| PUT    | `/api/teams/{id}/results/{resultId}` | `TeamsController.UpdateResult` | `UpdateCompetitionResultDto`    | `CompetitionResultDto` / 404       |
-| DELETE | `/api/teams/{id}/results/{resultId}` | `TeamsController.DeleteResult` | —                               | 204 / 404                           |
-| POST   | `/api/teams/{id}/logo`              | `TeamsController.UploadLogo`   | `multipart: file=<binary>`       | `{ LogoUrl }` / 400 (formato/size) |
-| GET    | `/api/ranking[?categoria]`          | `RankingController.GetRanking` | (query)                        | `TeamDto[]` (ordenado por score desc) |
-| GET    | `/api/stats/overview`               | `StatsController.GetOverview`  | —                               | `StatsOverviewDto`                  |
-| GET    | `/api/championships`                | `ChampionshipsController.GetAll` | —                              | `ChampionshipDto[]`                 |
-| POST   | `/api/championships`                | `ChampionshipsController.Create` | `CreateChampionshipDto`         | `ChampionshipDto` (201)            |
-| PUT    | `/api/championships/{id}`           | `ChampionshipsController.Update` | `CreateChampionshipDto`        | 204 / 404                           |
-| DELETE | `/api/championships/{id}`           | `ChampionshipsController.Delete` | —                              | 204                                 |
+| Método | Rota                                    | Controller / Action              | DTO entrada                   | Saída                                 |
+| ------ | --------------------------------------- | -------------------------------- | ----------------------------- | ------------------------------------- |
+| GET    | `/`                                     | `Program.cs` inline              | —                             | `{ status, environment, time }`       |
+| GET    | `/api/teams[?categoria&cidade&q&nivel]` | `TeamsController.GetTeams`       | (query)                       | `TeamDto[]`                           |
+| GET    | `/api/teams/{id}`                       | `TeamsController.GetTeam`        | —                             | `TeamDto` / 404                       |
+| POST   | `/api/teams`                            | `TeamsController.CreateTeam`     | `CreateTeamDto`               | `TeamDto` (201 + Location)            |
+| PUT    | `/api/teams/{id}`                       | `TeamsController.UpdateTeam`     | `UpdateTeamDto` (= Create+Id) | 204 / 400 (id mismatch) / 404         |
+| DELETE | `/api/teams/{id}`                       | `TeamsController.DeleteTeam`     | —                             | 204                                   |
+| POST   | `/api/teams/{id}/results`               | `TeamsController.AddResult`      | `CreateCompetitionResultDto`  | `CompetitionResultDto` / 404          |
+| PUT    | `/api/teams/{id}/results/{resultId}`    | `TeamsController.UpdateResult`   | `UpdateCompetitionResultDto`  | `CompetitionResultDto` / 404          |
+| DELETE | `/api/teams/{id}/results/{resultId}`    | `TeamsController.DeleteResult`   | —                             | 204 / 404                             |
+| POST   | `/api/teams/{id}/logo`                  | `TeamsController.UploadLogo`     | `multipart: file=<binary>`    | `{ LogoUrl }` / 400 (formato/size)    |
+| GET    | `/api/ranking[?categoria]`              | `RankingController.GetRanking`   | (query)                       | `TeamDto[]` (ordenado por score desc) |
+| GET    | `/api/stats/overview`                   | `StatsController.GetOverview`    | —                             | `StatsOverviewDto`                    |
+| GET    | `/api/championships`                    | `ChampionshipsController.GetAll` | —                             | `ChampionshipDto[]`                   |
+| POST   | `/api/championships`                    | `ChampionshipsController.Create` | `CreateChampionshipDto`       | `ChampionshipDto` (201)               |
+| PUT    | `/api/championships/{id}`               | `ChampionshipsController.Update` | `CreateChampionshipDto`       | 204 / 404                             |
+| DELETE | `/api/championships/{id}`               | `ChampionshipsController.Delete` | —                             | 204                                   |
 
 ### Rotas do frontend (TanStack Router)
 
-| Rota             | Página             | Arquivo                       |
-| ---------------- | ------------------ | ----------------------------- |
-| `/`              | Home               | `src/routes/index.tsx`        |
-| `/equipes`       | Lista de equipes    | `src/routes/equipes.index.tsx` |
-| `/equipes/$id`   | Detalhe da equipe   | `src/routes/equipes_.$id.tsx`  |
-| `/ranking`       | Ranking            | `src/routes/ranking.tsx`       |
-| `/dashboard`     | Dashboard          | `src/routes/dashboard.tsx`    |
-| `/campeonatos`   | Campeonatos        | `src/routes/campeonatos.tsx`  |
+| Rota           | Página            | Arquivo                        |
+| -------------- | ----------------- | ------------------------------ |
+| `/`            | Home              | `src/routes/index.tsx`         |
+| `/equipes`     | Lista de equipes  | `src/routes/equipes.index.tsx` |
+| `/equipes/$id` | Detalhe da equipe | `src/routes/equipes_.$id.tsx`  |
+| `/ranking`     | Ranking           | `src/routes/ranking.tsx`       |
+| `/dashboard`   | Dashboard         | `src/routes/dashboard.tsx`     |
+| `/campeonatos` | Campeonatos       | `src/routes/campeonatos.tsx`   |
 
 ### Clientes JS da API (frontend)
 
