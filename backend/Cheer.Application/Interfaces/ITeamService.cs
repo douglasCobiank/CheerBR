@@ -23,6 +23,6 @@ namespace Cheer.Application.Interfaces
         // atualiza apenas a coluna LogoUrl (sem sobrescrever os outros campos do Team
         // a partir de um snapshot stale lido do DB) e remove o logo anterior.
         // Retorna a URL absoluta construida a partir de `schemeHost` + path.
-        Task<string> SetLogoAsync(string id, Stream content, string contentType, string originalFileName, string schemeHost);
+        Task<string> SetLogoAsync(string id, Stream content, string contentType, string originalFileName);
     }
 }

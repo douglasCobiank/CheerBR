@@ -116,6 +116,10 @@ builder.Services.AddScoped<ITeamService, TeamService>();
 builder.Services.AddScoped<IChampionshipRepository, ChampionshipRepository>();
 builder.Services.AddScoped<IChampionshipService, ChampionshipService>();
 
+// Storage: R2 (se configurado) ou disco local. Singleton porque mantem
+// o cliente S3 e as configuracoes de bucket por toda a vida da app.
+builder.Services.AddSingleton<IStorageService, R2StorageService>();
+
 var app = builder.Build();
 
 // Swagger apenas em Development (evita enumeracao publica da API em producao)

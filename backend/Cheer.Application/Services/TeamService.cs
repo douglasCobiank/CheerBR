@@ -19,10 +19,12 @@ public class TeamService : ITeamService
     private const long MaxLogoBytes = 5_000_000;
 
     private readonly ITeamRepository _repository;
+    private readonly IStorageService _storage;
 
-    public TeamService(ITeamRepository repository)
+    public TeamService(ITeamRepository repository, IStorageService storage)
     {
         _repository = repository;
+        _storage = storage;
     }
 
     public async Task<(IEnumerable<TeamDto> items, int total)> GetTeamsAsync(int page, int pageSize,
@@ -146,7 +148,7 @@ public class TeamService : ITeamService
         };
     }
 
-    public async Task<string> SetLogoAsync(string id, Stream content, string contentType, string originalFileName, string schemeHost)
+    public async Task<string> SetLogoAsync(string id, Stream content, string contentType, string originalFileName)
     {
         // Validacoes basicas de tamanho/tipo antes de tocar o disco
         if (content == null || content.Length == 0)
@@ -175,29 +177,18 @@ public class TeamService : ITeamService
 
         // Nome seguro (id + guid + extensao validada). Nao confiar no nome do arquivo do client.
         var safeExtension = AllowedExtensions.First(e => e.Equals(extension, StringComparison.OrdinalIgnoreCase));
-        var fileName = $"{id}_{Guid.NewGuid():N}{safeExtension}";
+        var fileName = $"{team.Id}_{Guid.NewGuid():N}{safeExtension}";
 
-        // Pasta de uploads (env var UPLOADS_PATH configurada em Program.cs; fallback wwwroot/uploads)
-        var uploadsFolder = !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("UPLOADS_PATH"))
-            ? Environment.GetEnvironmentVariable("UPLOADS_PATH")!
-            : Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-        if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
+        // Upload para R2 ou disco local via IStorageService
+        var logoUrl = await _storage.UploadAsync(fileName, content, contentType);
 
-        var filePath = Path.Combine(uploadsFolder, fileName);
-
-        using (var stream = new FileStream(filePath, FileMode.Create))
+        // Remove logo anterior do storage (R2 ou disco)
+        var previousKey = _storage.ExtractKey(team.LogoUrl);
+        if (previousKey != null)
         {
-            await content.CopyToAsync(stream);
+            await _storage.DeleteAsync(previousKey);
         }
 
-        // Remove logo anterior (se houver) — evita crescimento descontrolado do disco
-        var previousLogoPath = TryResolveLocalLogoPath(team.LogoUrl, schemeHost);
-        if (!string.IsNullOrEmpty(previousLogoPath) && File.Exists(previousLogoPath))
-        {
-            try { File.Delete(previousLogoPath); } catch { /* best-effort; nao derrubar a operacao */ }
-        }
-
-        var logoUrl = $"{schemeHost}/uploads/{fileName}";
         await _repository.UpdateLogoUrlAsync(id, logoUrl);
 
         return logoUrl;
@@ -225,22 +216,5 @@ public class TeamService : ITeamService
                 && header[3] == 0x46;
 
         return false;
-    }
-
-    private static string? TryResolveLocalLogoPath(string? logoUrl, string schemeHost)
-    {
-        if (string.IsNullOrWhiteSpace(logoUrl)) return null;
-        var prefix = $"{schemeHost}/uploads/";
-        if (!logoUrl.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)) return null;
-
-        var fileName = logoUrl.Substring(prefix.Length);
-        // Rejeitar qualquer path traversal no nome salvo (defensivo — no momento so gravamos GUIDs)
-        if (fileName.Contains("..") || fileName.Contains('/') || fileName.Contains('\\')) return null;
-
-        var uploadsFolder = !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("UPLOADS_PATH"))
-            ? Environment.GetEnvironmentVariable("UPLOADS_PATH")!
-            : Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-
-        return Path.Combine(uploadsFolder, fileName);
     }
 }

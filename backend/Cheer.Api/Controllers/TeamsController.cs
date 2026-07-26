@@ -106,13 +106,10 @@ public class TeamsController : ControllerBase
             return BadRequest("No file uploaded");
 
         // Validacao expressa no servico; aqui apenas repassamos.
-        var request = HttpContext.Request;
-        var schemeHost = $"{request.Scheme}://{request.Host}";
-
         try
         {
             using var stream = file.OpenReadStream();
-            var logoUrl = await _teamService.SetLogoAsync(id, stream, file.ContentType, file.FileName, schemeHost);
+            var logoUrl = await _teamService.SetLogoAsync(id, stream, file.ContentType, file.FileName);
             return Ok(new { LogoUrl = logoUrl });
         }
         catch (NotFoundException ex)
