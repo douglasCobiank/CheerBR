@@ -109,7 +109,16 @@ function EquipesPage() {
         <AddTeamDialog
           onClose={() => setOpen(false)}
           onSubmit={async (data) => {
-            await addTeam(data);
+            await addTeam({
+              ...data,
+              programa: data.programa ?? null,
+              nivel: data.nivel ?? null,
+              instagram: data.instagram ?? null,
+              facebook: data.facebook ?? null,
+              coach: data.coach ?? null,
+              fundacao: data.fundacao ?? null,
+              logoUrl: data.logoUrl ?? null,
+            });
             setOpen(false);
           }}
         />

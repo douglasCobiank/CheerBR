@@ -17,10 +17,27 @@ namespace Cheer.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Team>> GetAllAsync(string? categoria = null, string? cidade = null, string? q = null, int? nivel = null)
+        public async Task<int> GetCountAsync(string? categoria = null, string? cidade = null, string? q = null, int? nivel = null)
         {
-            // AsNoTracking: read-only, evita overhead de change-tracking no
-            // DbContext (memoria + diff por entidade carregada).
+            var query = _context.Teams.AsNoTracking().AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(categoria))
+                query = query.Where(t => t.Categoria == categoria);
+            if (!string.IsNullOrWhiteSpace(cidade))
+                query = query.Where(t => t.Cidade == cidade);
+            if (!string.IsNullOrWhiteSpace(q))
+                query = query.Where(t =>
+                    EF.Functions.ILike(t.Nome, $"%{q}%")
+                    || (t.Programa != null && EF.Functions.ILike(t.Programa, $"%{q}%")));
+            if (nivel.HasValue)
+                query = query.Where(t => t.Nivel == nivel.Value);
+
+            return await query.CountAsync();
+        }
+
+        public async Task<(IEnumerable<Team> items, int total)> GetPagedAsync(int page, int pageSize,
+            string? categoria = null, string? cidade = null, string? q = null, int? nivel = null)
+        {
             var query = _context.Teams
                 .Include(t => t.Results)
                 .AsNoTracking()
@@ -28,25 +45,27 @@ namespace Cheer.Infrastructure.Repositories
 
             if (!string.IsNullOrWhiteSpace(categoria))
                 query = query.Where(t => t.Categoria == categoria);
-
             if (!string.IsNullOrWhiteSpace(cidade))
                 query = query.Where(t => t.Cidade == cidade);
-
             if (!string.IsNullOrWhiteSpace(q))
                 query = query.Where(t =>
                     EF.Functions.ILike(t.Nome, $"%{q}%")
                     || (t.Programa != null && EF.Functions.ILike(t.Programa, $"%{q}%")));
-
             if (nivel.HasValue)
                 query = query.Where(t => t.Nivel == nivel.Value);
 
-            return await query.ToListAsync();
+            var total = await query.CountAsync();
+            var items = await query
+                .OrderBy(t => t.Nome)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (items, total);
         }
 
         public async Task<Team?> GetByIdAsync(string id)
         {
-            // AsNoTracking: read-only. Service chama CalculateScore mas nao muta
-            // a entidade (score e recalculado defensivamente a cada leitura).
             return await _context.Teams
                 .Include(t => t.Results)
                 .AsNoTracking()
@@ -71,7 +90,7 @@ namespace Cheer.Infrastructure.Repositories
             var team = await _context.Teams.FindAsync(id);
             if (team != null)
             {
-                _context.Teams.Remove(team);
+                team.IsDeleted = true;
                 await _context.SaveChangesAsync();
             }
         }
@@ -100,7 +119,7 @@ namespace Cheer.Infrastructure.Repositories
 
         public async Task<int> GetTotalCountAsync()
         {
-            return await _context.Teams.CountAsync();
+            return await _context.Teams.IgnoreQueryFilters().CountAsync();
         }
 
         public async Task<int> GetActiveCountAsync()

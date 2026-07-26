@@ -1,5 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import type { Team, CompetitionResult } from "@/lib/types";
 import { useTeams, useTeamResults, useUploadLogo } from "@/lib/teams-store";
 import { TeamCard } from "@/components/team-card";
@@ -14,7 +16,13 @@ import {
   INPUT_CLASS,
   NIVEIS,
 } from "@/lib/constants";
-import { ResultForm, type ResultFormData } from "@/components/result-form";
+import {
+  teamSchema,
+  resultSchema,
+  type TeamFormValues,
+  type ResultFormValues,
+} from "@/lib/schemas";
+import { ResultForm } from "@/components/result-form";
 
 export const Route = createFileRoute("/equipes_/$id")({
   component: TeamDetailsPage,
@@ -31,7 +39,26 @@ function TeamDetailsPage() {
   const [isEditing, setIsEditing] = useState(false);
   const [openResultModal, setOpenResultModal] = useState(false);
   const [editingResult, setEditingResult] = useState<CompetitionResult | null>(null);
-  const [form, setForm] = useState<Team | null>(null);
+
+  const editForm = useForm<TeamFormValues>({
+    resolver: zodResolver(teamSchema),
+    values: team
+      ? {
+          nome: team.nome,
+          programa: team.programa ?? "",
+          nivel: team.nivel,
+          cidade: team.cidade,
+          estado: team.estado,
+          categoria: team.categoria as TeamFormValues["categoria"],
+          instagram: team.instagram ?? "",
+          facebook: team.facebook ?? "",
+          coach: team.coach ?? "",
+          fundacao: team.fundacao ?? "",
+          status: team.status as TeamFormValues["status"],
+          logoUrl: team.logoUrl,
+        }
+      : undefined,
+  });
 
   if (isLoading) return <div className="p-10 text-center">Carregando...</div>;
 
@@ -46,19 +73,17 @@ function TeamDetailsPage() {
     );
   }
 
-  const handleUpdateTeam = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!form) return;
-    await updateTeam({ id, data: form });
+  const handleUpdateTeam = editForm.handleSubmit(async (data) => {
+    await updateTeam({ id, data });
     setIsEditing(false);
-  };
+  });
 
-  const handleAddResult = async (resultData: ResultFormData) => {
+  const handleAddResult = async (resultData: ResultFormValues) => {
     await addResult(resultData);
     setOpenResultModal(false);
   };
 
-  const handleUpdateResult = async (resultData: ResultFormData) => {
+  const handleUpdateResult = async (resultData: ResultFormValues) => {
     if (!editingResult) return;
     await updateResult({ resultId: editingResult.id, data: resultData });
     setEditingResult(null);
@@ -100,16 +125,13 @@ function TeamDetailsPage() {
             <div className="space-y-4">
               <TeamCard team={team} />
               <button
-                onClick={() => {
-                  setForm({ ...team });
-                  setIsEditing(true);
-                }}
+                onClick={() => setIsEditing(true)}
                 className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-border bg-card px-5 py-2.5 text-sm font-semibold hover:bg-secondary"
               >
                 <Edit className="h-4 w-4" /> Editar Informações
               </button>
             </div>
-          ) : form ? (
+          ) : (
             <form
               onSubmit={handleUpdateTeam}
               className="rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-card)]"
@@ -119,9 +141,9 @@ function TeamDetailsPage() {
               <div className="space-y-4">
                 <Field label="Logo da Equipe (Opcional)">
                   <div className="flex items-center gap-4 rounded-lg border border-border bg-input/60 p-2">
-                    {form.logoUrl ? (
+                    {editForm.watch("logoUrl") ? (
                       <img
-                        src={form.logoUrl}
+                        src={editForm.watch("logoUrl") ?? ""}
                         alt="Logo"
                         width={48}
                         height={48}
@@ -143,7 +165,7 @@ function TeamDetailsPage() {
                         const file = e.target.files?.[0];
                         if (file) {
                           const res = await uploadLogo(file);
-                          setForm({ ...form, logoUrl: res.LogoUrl });
+                          editForm.setValue("logoUrl", res.LogoUrl);
                         }
                       }}
                       className="cursor-pointer text-sm file:mr-4 file:rounded-full file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-semibold file:text-primary-foreground hover:file:opacity-90"
@@ -153,42 +175,20 @@ function TeamDetailsPage() {
                     )}
                   </div>
                 </Field>
-                <Field label="Nome *">
-                  <input
-                    required
-                    value={form.nome}
-                    onChange={(e) => setForm({ ...form, nome: e.target.value })}
-                    className={INPUT_CLASS}
-                  />
+                <Field label="Nome *" error={editForm.formState.errors.nome?.message}>
+                  <input className={INPUT_CLASS} {...editForm.register("nome")} />
                 </Field>
                 <Field label="Programa / Ginásio">
-                  <input
-                    value={form.programa ?? ""}
-                    onChange={(e) => setForm({ ...form, programa: e.target.value || null })}
-                    className={INPUT_CLASS}
-                  />
+                  <input className={INPUT_CLASS} {...editForm.register("programa")} />
                 </Field>
-                <Field label="Cidade *">
-                  <input
-                    required
-                    value={form.cidade}
-                    onChange={(e) => setForm({ ...form, cidade: e.target.value })}
-                    className={INPUT_CLASS}
-                  />
+                <Field label="Cidade *" error={editForm.formState.errors.cidade?.message}>
+                  <input className={INPUT_CLASS} {...editForm.register("cidade")} />
                 </Field>
                 <Field label="Estado">
-                  <input
-                    value={form.estado}
-                    onChange={(e) => setForm({ ...form, estado: e.target.value })}
-                    className={INPUT_CLASS}
-                  />
+                  <input className={INPUT_CLASS} {...editForm.register("estado")} />
                 </Field>
-                <Field label="Categoria">
-                  <select
-                    value={form.categoria}
-                    onChange={(e) => setForm({ ...form, categoria: e.target.value })}
-                    className={INPUT_CLASS}
-                  >
+                <Field label="Categoria" error={editForm.formState.errors.categoria?.message}>
+                  <select className={INPUT_CLASS} {...editForm.register("categoria")}>
                     {CATEGORIAS.map((c) => (
                       <option key={c} value={c}>
                         {c}
@@ -198,11 +198,8 @@ function TeamDetailsPage() {
                 </Field>
                 <Field label="Nível">
                   <select
-                    value={form.nivel ?? ""}
-                    onChange={(e) =>
-                      setForm({ ...form, nivel: e.target.value ? Number(e.target.value) : null })
-                    }
                     className={INPUT_CLASS}
+                    {...editForm.register("nivel", { valueAsNumber: true })}
                   >
                     <option value="">—</option>
                     {NIVEIS.map((n) => (
@@ -213,39 +210,19 @@ function TeamDetailsPage() {
                   </select>
                 </Field>
                 <Field label="Coach">
-                  <input
-                    value={form.coach ?? ""}
-                    onChange={(e) => setForm({ ...form, coach: e.target.value || null })}
-                    className={INPUT_CLASS}
-                  />
+                  <input className={INPUT_CLASS} {...editForm.register("coach")} />
                 </Field>
                 <Field label="Instagram">
-                  <input
-                    value={form.instagram ?? ""}
-                    onChange={(e) => setForm({ ...form, instagram: e.target.value || null })}
-                    className={INPUT_CLASS}
-                  />
+                  <input className={INPUT_CLASS} {...editForm.register("instagram")} />
                 </Field>
                 <Field label="Facebook">
-                  <input
-                    value={form.facebook ?? ""}
-                    onChange={(e) => setForm({ ...form, facebook: e.target.value || null })}
-                    className={INPUT_CLASS}
-                  />
+                  <input className={INPUT_CLASS} {...editForm.register("facebook")} />
                 </Field>
                 <Field label="Fundação">
-                  <input
-                    value={form.fundacao ?? ""}
-                    onChange={(e) => setForm({ ...form, fundacao: e.target.value || null })}
-                    className={INPUT_CLASS}
-                  />
+                  <input className={INPUT_CLASS} {...editForm.register("fundacao")} />
                 </Field>
-                <Field label="Status">
-                  <select
-                    value={form.status}
-                    onChange={(e) => setForm({ ...form, status: e.target.value })}
-                    className={INPUT_CLASS}
-                  >
+                <Field label="Status" error={editForm.formState.errors.status?.message}>
+                  <select className={INPUT_CLASS} {...editForm.register("status")}>
                     {STATUSES.map((s) => (
                       <option key={s} value={s}>
                         {s}
@@ -271,7 +248,7 @@ function TeamDetailsPage() {
                 </button>
               </div>
             </form>
-          ) : null}
+          )}
         </div>
 
         <div>
@@ -357,6 +334,7 @@ function TeamDetailsPage() {
             nivel: editingResult.nivel,
             tipoCategoria: editingResult.tipoCategoria,
             colocacao: editingResult.colocacao,
+            championshipId: editingResult.championshipId ?? null,
           }}
           onClose={() => setEditingResult(null)}
           onSubmit={handleUpdateResult}

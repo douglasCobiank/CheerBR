@@ -17,6 +17,7 @@ namespace Cheer.Domain.Entities
         public string? Fundacao { get; set; }
         public required string Status { get; set; }
         public string? LogoUrl { get; set; }
+        public bool IsDeleted { get; set; }
 
         public int Score { get; set; }
 

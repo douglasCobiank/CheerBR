@@ -1,26 +1,10 @@
-import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { z } from "zod";
 import { Field } from "@/components/ui/field";
 import { Modal } from "@/components/modal";
 import { INPUT_CLASS, CATEGORIAS, STATUSES } from "@/lib/constants";
-
-const schema = z.object({
-  nome: z.string().min(2),
-  cidade: z.string().min(2),
-  nivel: z.number().min(1).max(6),
-  categoria: z.string(),
-  estado: z.string(),
-  programa: z.string().nullable(),
-  coach: z.string().nullable(),
-  instagram: z.string().nullable(),
-  facebook: z.string().nullable(),
-  fundacao: z.string().nullable(),
-  logoUrl: z.string().nullable(),
-  status: z.string(),
-});
-
-type FormData = z.infer<typeof schema>;
+import { teamSchema, type TeamFormValues } from "@/lib/schemas";
 
 export function AddTeamDialog({
   onClose,
@@ -28,93 +12,64 @@ export function AddTeamDialog({
   isLoading,
 }: {
   onClose: () => void;
-  onSubmit: (data: FormData) => Promise<void>;
+  onSubmit: (data: TeamFormValues) => Promise<void>;
   isLoading?: boolean;
 }) {
-  const [form, setForm] = useState<FormData>({
-    nome: "",
-    cidade: "",
-    nivel: 2,
-    categoria: "Universitário",
-    estado: "PR",
-    programa: null,
-    coach: null,
-    instagram: null,
-    facebook: null,
-    fundacao: null,
-    logoUrl: null,
-    status: "Ativo",
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<TeamFormValues>({
+    resolver: zodResolver(teamSchema),
+    defaultValues: {
+      nome: "",
+      cidade: "",
+      nivel: 2,
+      categoria: "Universitário",
+      estado: "PR",
+      programa: "",
+      coach: "",
+      instagram: "",
+      facebook: "",
+      fundacao: "",
+      status: "Ativo",
+      logoUrl: null,
+    },
   });
 
-  const [errors, setErrors] = useState<Record<string, string>>({});
-
-  const set = <K extends keyof FormData>(k: K, v: FormData[K]) =>
-    setForm((f) => ({ ...f, [k]: v }));
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-
-    const parsed = schema.safeParse(form);
-
-    if (!parsed.success) {
-      const err: Record<string, string> = {};
-      parsed.error.errors.forEach((e) => {
-        if (e.path[0]) err[e.path[0] as string] = e.message;
-      });
-
-      setErrors(err);
-      toast.error("Preencha os campos obrigatórios");
-      return;
-    }
-
+  const onFormSubmit = async (data: TeamFormValues) => {
     try {
-      await onSubmit(parsed.data);
-      toast.success("Equipe criada com sucesso 🚀");
+      await onSubmit(data);
+      toast.success("Equipe criada com sucesso");
       onClose();
     } catch {
       toast.error("Erro ao criar equipe");
     }
-  }
+  };
 
   return (
     <Modal open onClose={onClose}>
       <form
-        onSubmit={handleSubmit}
+        onSubmit={handleSubmit(onFormSubmit)}
         className="w-full max-w-xl rounded-2xl border border-border bg-card p-6"
       >
         <h2 className="font-display text-3xl">Nova equipe</h2>
 
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
-          <Field label="Nome" error={errors.nome}>
-            <input
-              className={INPUT_CLASS}
-              value={form.nome}
-              onChange={(e) => set("nome", e.target.value)}
-            />
+          <Field label="Nome" error={errors.nome?.message}>
+            <input className={INPUT_CLASS} {...register("nome")} />
           </Field>
 
-          <Field label="Cidade" error={errors.cidade}>
-            <input
-              className={INPUT_CLASS}
-              value={form.cidade}
-              onChange={(e) => set("cidade", e.target.value)}
-            />
+          <Field label="Cidade" error={errors.cidade?.message}>
+            <input className={INPUT_CLASS} {...register("cidade")} />
           </Field>
 
-          <Field label="Estado">
-            <input
-              className={INPUT_CLASS}
-              value={form.estado}
-              onChange={(e) => set("estado", e.target.value)}
-            />
+          <Field label="Estado" error={errors.estado?.message}>
+            <input className={INPUT_CLASS} {...register("estado")} />
           </Field>
 
-          <Field label="Categoria">
-            <select
-              className={INPUT_CLASS}
-              value={form.categoria}
-              onChange={(e) => set("categoria", e.target.value)}
-            >
+          <Field label="Categoria" error={errors.categoria?.message}>
+            <select className={INPUT_CLASS} {...register("categoria")}>
               {CATEGORIAS.map((c) => (
                 <option key={c}>{c}</option>
               ))}
@@ -122,62 +77,37 @@ export function AddTeamDialog({
           </Field>
 
           <Field label="Programa / Ginásio">
-            <input
-              className={INPUT_CLASS}
-              value={form.programa ?? ""}
-              onChange={(e) => set("programa", e.target.value || null)}
-            />
+            <input className={INPUT_CLASS} {...register("programa")} />
           </Field>
 
-          <Field label="Nível">
+          <Field label="Nível" error={errors.nivel?.message}>
             <input
               type="number"
               min="1"
               max="6"
               className={INPUT_CLASS}
-              value={form.nivel}
-              onChange={(e) => set("nivel", Number(e.target.value))}
+              {...register("nivel", { valueAsNumber: true })}
             />
           </Field>
 
           <Field label="Coach">
-            <input
-              className={INPUT_CLASS}
-              value={form.coach ?? ""}
-              onChange={(e) => set("coach", e.target.value || null)}
-            />
+            <input className={INPUT_CLASS} {...register("coach")} />
           </Field>
 
           <Field label="Instagram">
-            <input
-              className={INPUT_CLASS}
-              value={form.instagram ?? ""}
-              onChange={(e) => set("instagram", e.target.value || null)}
-            />
+            <input className={INPUT_CLASS} {...register("instagram")} />
           </Field>
 
           <Field label="Facebook">
-            <input
-              className={INPUT_CLASS}
-              value={form.facebook ?? ""}
-              onChange={(e) => set("facebook", e.target.value || null)}
-            />
+            <input className={INPUT_CLASS} {...register("facebook")} />
           </Field>
 
           <Field label="Fundação">
-            <input
-              className={INPUT_CLASS}
-              value={form.fundacao ?? ""}
-              onChange={(e) => set("fundacao", e.target.value || null)}
-            />
+            <input className={INPUT_CLASS} {...register("fundacao")} />
           </Field>
 
-          <Field label="Status">
-            <select
-              className={INPUT_CLASS}
-              value={form.status}
-              onChange={(e) => set("status", e.target.value)}
-            >
+          <Field label="Status" error={errors.status?.message}>
+            <select className={INPUT_CLASS} {...register("status")}>
               {STATUSES.map((s) => (
                 <option key={s}>{s}</option>
               ))}

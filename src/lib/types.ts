@@ -25,6 +25,7 @@ export type CompetitionResult = {
   nivel: number;
   tipoCategoria: string;
   colocacao: number;
+  championshipId?: string | null;
 };
 
 export type Championship = {

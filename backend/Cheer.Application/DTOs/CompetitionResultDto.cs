@@ -15,5 +15,6 @@ namespace Cheer.Application.DTOs
         public int Nivel { get; set; }
         public required string TipoCategoria { get; set; }
         public int Colocacao { get; set; }
+        public string? ChampionshipId { get; set; }
     }
 }

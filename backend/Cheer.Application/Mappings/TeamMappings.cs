@@ -41,6 +41,7 @@ public static class TeamMappings
             Nivel = result.Nivel,
             TipoCategoria = result.TipoCategoria,
             Colocacao = result.Colocacao,
+            ChampionshipId = result.ChampionshipId,
         };
     }
 
@@ -90,6 +91,7 @@ public static class TeamMappings
             Nivel = dto.Nivel,
             TipoCategoria = dto.TipoCategoria,
             Colocacao = dto.Colocacao,
+            ChampionshipId = dto.ChampionshipId,
         };
     }
 
@@ -101,5 +103,6 @@ public static class TeamMappings
         result.Nivel = dto.Nivel;
         result.TipoCategoria = dto.TipoCategoria;
         result.Colocacao = dto.Colocacao;
+        result.ChampionshipId = dto.ChampionshipId;
     }
 }

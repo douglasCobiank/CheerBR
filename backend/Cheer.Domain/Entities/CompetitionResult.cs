@@ -12,7 +12,9 @@ namespace Cheer.Domain.Entities
         public int Nivel { get; set; }
         public required string TipoCategoria { get; set; }
         public int Colocacao { get; set; }
+        public string? ChampionshipId { get; set; }
 
         public Team? Team { get; set; }
+        public Championship? Championship { get; set; }
     }
 }

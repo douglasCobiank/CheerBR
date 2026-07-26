@@ -24,5 +24,8 @@ namespace Cheer.Application.DTOs
 
         [Range(1, int.MaxValue, ErrorMessage = "Colocacao deve ser positiva")]
         public int Colocacao { get; set; }
+
+        [StringLength(200)]
+        public string? ChampionshipId { get; set; }
     }
 }

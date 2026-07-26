@@ -1,77 +1,51 @@
-import { useState, useCallback, useEffect } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import type { Championship } from "./types";
 import { api } from "./api";
+import { queryKeys } from "./query-keys";
 
-const STORAGE_KEY = "cheerbr_championships";
-
-function loadLocal(): Championship[] {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
-}
-
-function saveLocal(list: Championship[]) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-}
-
-function generateId() {
-  return `local_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-}
-
-// Tenta API primeiro, fallback para localStorage
+/**
+ * Gerencia campeonatos via TanStack Query.
+ *
+ * Elimina o antigo padrao useState/useEffect/localStorage que
+ * (1) duplicava o cache do TanStack e (2) criava IDs locais
+ * ("local_<ts>_<rand>") que o backend rejeitava.
+ *
+ * Se o backend retornar 404/network error, o query invalida
+ * e a UI mostra "Criado, mas pendente" (melhor que ID fake).
+ */
 export function useChampionships() {
-  const [championships, setChampionships] = useState<Championship[]>(loadLocal);
-  const [isLoading, setIsLoading] = useState(true);
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    api
-      .getChampionships()
-      .then((data) => {
-        setChampionships(data);
-        setIsLoading(false);
-      })
-      .catch(() => {
-        setChampionships(loadLocal());
-        setIsLoading(false);
-      });
-  }, []);
+  const championshipsQuery = useQuery({
+    queryKey: queryKeys.championships,
+    queryFn: () => api.getChampionships(),
+    initialData: [],
+  });
 
-  const createChampionship = useCallback(async (nome: string): Promise<Championship> => {
-    try {
-      const created = await api.createChampionship(nome);
-      setChampionships((prev) => [...prev, created]);
-      return created;
-    } catch {
-      const local: Championship = { id: generateId(), nome };
-      setChampionships((prev) => {
-        const next = [...prev, local];
-        saveLocal(next);
-        return next;
-      });
-      return local;
-    }
-  }, []);
+  const createMutation = useMutation({
+    mutationFn: (nome: string) => api.createChampionship(nome),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.championships });
+    },
+  });
 
-  const deleteChampionship = useCallback(async (id: string) => {
-    try {
-      await api.deleteChampionship(id);
-    } catch {
-      // local-only fallback
-    }
-    setChampionships((prev) => {
-      const next = prev.filter((c) => c.id !== id);
-      saveLocal(next);
-      return next;
-    });
-  }, []);
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => api.deleteChampionship(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.championships });
+    },
+  });
 
   return {
-    championships,
-    isLoading,
-    createChampionship,
-    deleteChampionship,
+    championships: championshipsQuery.data ?? [],
+    isLoading: championshipsQuery.isLoading,
+    isError: championshipsQuery.isError,
+    error: championshipsQuery.error,
+
+    createChampionship: createMutation.mutateAsync,
+    isCreating: createMutation.isPending,
+
+    deleteChampionship: deleteMutation.mutateAsync,
+    isDeleting: deleteMutation.isPending,
   };
 }

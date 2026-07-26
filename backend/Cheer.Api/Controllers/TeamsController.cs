@@ -24,14 +24,25 @@ public class TeamsController : ControllerBase
 
     [HttpGet]
     [AllowAnonymous]
-    public async Task<ActionResult<IEnumerable<TeamDto>>> GetTeams(
+    public async Task<ActionResult> GetTeams(
         [FromQuery] string? categoria,
         [FromQuery] string? cidade,
         [FromQuery] string? q,
-        [FromQuery] int? nivel)
+        [FromQuery] int? nivel,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 50)
     {
-        var teams = await _teamService.GetTeamsAsync(categoria, cidade, q, nivel);
-        return Ok(teams);
+        pageSize = Math.Clamp(pageSize, 1, 200);
+        page = Math.Max(1, page);
+        var (items, total) = await _teamService.GetTeamsAsync(page, pageSize, categoria, cidade, q, nivel);
+        return Ok(new
+        {
+            items,
+            total,
+            page,
+            pageSize,
+            totalPages = (int)Math.Ceiling((double)total / pageSize),
+        });
     }
 
     [HttpGet("{id}")]
