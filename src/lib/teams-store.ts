@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import type { Team, CompetitionResult } from "./types";
 import { api } from "./api";
+import { queryKeys } from "./query-keys";
 
 /**
  * Invalida todas as query keys derivadas das equipes.
@@ -10,9 +11,7 @@ import { api } from "./api";
 export function useInvalidateAll() {
   const queryClient = useQueryClient();
   return () => {
-    queryClient.invalidateQueries({ queryKey: ["teams"] });
-    queryClient.invalidateQueries({ queryKey: ["ranking"] });
-    queryClient.invalidateQueries({ queryKey: ["stats"] });
+    queryClient.invalidateQueries({ queryKey: queryKeys.teams });
   };
 }
 
@@ -20,7 +19,7 @@ export function useTeams() {
   const invalidateAll = useInvalidateAll();
 
   const teamsQuery = useQuery({
-    queryKey: ["teams"],
+    queryKey: queryKeys.teams,
     queryFn: () => api.getTeams(),
     initialData: [],
   });
@@ -43,6 +42,9 @@ export function useTeams() {
   return {
     teams: teamsQuery.data ?? [],
     isLoading: teamsQuery.isLoading,
+    isError: teamsQuery.isError,
+    error: teamsQuery.error,
+    refetch: teamsQuery.refetch,
 
     isCreating: addMutation.isPending,
     isUpdating: updateMutation.isPending,

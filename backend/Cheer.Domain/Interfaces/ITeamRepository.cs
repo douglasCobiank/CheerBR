@@ -12,7 +12,11 @@ namespace Cheer.Domain.Interfaces
         Task UpdateAsync(Team team);
         Task DeleteAsync(string id);
         Task<IEnumerable<Team>> GetRankingAsync(string? categoria = null);
-        
+
+        // Atualiza apenas a coluna LogoUrl (evita sobrescrever os outros campos
+        // a partir de um snapshot stale lido do DB no controller/servico).
+        Task UpdateLogoUrlAsync(string id, string? logoUrl);
+
         // For stats overview
         Task<int> GetTotalCountAsync();
         Task<int> GetActiveCountAsync();

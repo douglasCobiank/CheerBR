@@ -74,6 +74,15 @@ namespace Cheer.Infrastructure.Repositories
             return await query.OrderByDescending(t => t.Score).ToListAsync();
         }
 
+        public async Task UpdateLogoUrlAsync(string id, string? logoUrl)
+        {
+            var team = await _context.Teams.FindAsync(id);
+            if (team is null) return;
+            team.LogoUrl = logoUrl;
+            _context.Entry(team).Property(t => t.LogoUrl).IsModified = true;
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<int> GetTotalCountAsync()
         {
             return await _context.Teams.CountAsync();

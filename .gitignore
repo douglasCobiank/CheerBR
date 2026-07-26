@@ -31,6 +31,10 @@ dist-ssr
 *.sln
 *.sw?
 
+# TanStack Router: routeTree e gerado a partir de src/routes/
+# Nao commitar o artefato auto-gerado (causa merge noise e stale-tree bugs).
+src/routeTree.gen.ts
+
 # Secrets / env
 .env
 .env.*
@@ -47,9 +51,13 @@ project.lock.json
 project.fragment.lock.json
 artifacts/
 
-# Uploads (logos) - nunca commitar binários de upload
+# Uploads (logos) - nunca commitar binarios de upload
 **/wwwroot/uploads/*
 !**/wwwroot/uploads/.gitkeep
 
 # Postgres data volume (local dev)
 .pgdata/
+
+# Seed data corrompido/legacy: frontend-only snapshot, sem imports no codigo.
+# Source of truth hoje e o PostgreSQL. Manter apenas como referencia local.
+src/data/teams.seed.json

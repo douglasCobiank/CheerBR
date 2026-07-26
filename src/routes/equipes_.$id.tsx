@@ -123,6 +123,9 @@ function TeamDetailsPage() {
                       <img
                         src={form.logoUrl}
                         alt="Logo"
+                        width={48}
+                        height={48}
+                        loading="lazy"
                         className="h-12 w-12 shrink-0 rounded-xl border border-border object-cover"
                         onError={(e) => {
                           (e.target as HTMLImageElement).style.display = "none";

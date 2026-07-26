@@ -11,8 +11,42 @@ const tierColor = (n: number | null) => {
   return "bg-secondary text-secondary-foreground";
 };
 
+/**
+ * Normaliza handle/URL de rede social para uma URL absoluta segura.
+ * Aceita: "@handle", "handle", "https://instagram.com/handle",
+ * "https://www.instagram.com/handle/", "http://...".
+ * Rejeita: schemas perigosos (javascript:, data:, vbscript:).
+ */
+function normalizeSocialUrl(value: string | undefined | null, baseUrl: string): string | null {
+  if (!value) return null;
+  const trimmed = value.trim();
+  if (!trimmed) return null;
+
+  // Ja e URL absoluta? Validar schema http(s).
+  if (/^https?:\/\//i.test(trimmed)) {
+    return trimmed;
+  }
+
+  // Rejeitar qualquer scheme que contenha ":" antes da primeira "/" -
+  // cobre javascript:, data:, vbscript:, etc.
+  if (/^[a-z][a-z0-9+.-]*:/i.test(trimmed)) {
+    return null;
+  }
+
+  // Caso contrario, e um handle. Remover "@" inicial e juntar ao baseUrl.
+  const handle = trimmed.replace(/^@+/, "");
+  return `${baseUrl}${handle}`;
+}
+
+const INSTAGRAM_BASE = "https://instagram.com/";
+const FACEBOOK_BASE = "https://facebook.com/";
+
 export function TeamCard({ team, rank }: { team: Team; rank?: number }) {
   const [logoError, setLogoError] = useState(false);
+
+  const instagramUrl = normalizeSocialUrl(team.instagram, INSTAGRAM_BASE);
+  const facebookUrl = normalizeSocialUrl(team.facebook, FACEBOOK_BASE);
+
   return (
     <div className="group relative overflow-hidden rounded-2xl border border-border/60 bg-[image:var(--gradient-card)] p-5 shadow-[var(--shadow-card)] transition hover:border-primary/60 hover:shadow-[var(--shadow-glow)]">
       <Link
@@ -29,6 +63,9 @@ export function TeamCard({ team, rank }: { team: Team; rank?: number }) {
           <img
             src={team.logoUrl}
             alt={team.nome}
+            width={48}
+            height={48}
+            loading="lazy"
             className="h-12 w-12 shrink-0 rounded-xl object-cover border border-border"
             onError={() => setLogoError(true)}
           />
@@ -79,23 +116,23 @@ export function TeamCard({ team, rank }: { team: Team; rank?: number }) {
         <span className="ml-auto font-display text-lg text-primary">{team.score}</span>
       </div>
 
-      {(team.instagram || team.facebook) && (
+      {(instagramUrl || facebookUrl) && (
         <div className="mt-3 flex gap-3 border-t border-border/60 pt-3 text-muted-foreground">
-          {team.instagram && (
+          {instagramUrl && (
             <a
-              href={`https://instagram.com/${team.instagram.replace("@", "")}`}
+              href={instagramUrl}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="relative z-10 flex items-center gap-1 text-xs hover:text-primary cursor-pointer"
             >
               <Instagram className="h-3.5 w-3.5" /> {team.instagram}
             </a>
           )}
-          {team.facebook && (
+          {facebookUrl && (
             <a
-              href={team.facebook.startsWith("http") ? team.facebook : `https://${team.facebook}`}
+              href={facebookUrl}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="relative z-10 flex items-center gap-1 text-xs hover:text-primary cursor-pointer"
             >
               <Facebook className="h-3.5 w-3.5" /> Facebook

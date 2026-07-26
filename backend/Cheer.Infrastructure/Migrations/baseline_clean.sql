@@ -64,12 +64,5 @@ CREATE TABLE IF NOT EXISTS "Championships" (
 
 -- Marca todas as migrations EF como ja aplicadas, evitando replay:
 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion") VALUES
-    ('20260617225333_InitialCreate',          '10.0.9'),
-    ('20260617230310_InitialCreate2',          '10.0.9'),
-    ('20260617231136_InitialCreate3',          '10.0.9'),
-    ('20260619022240_TempMigration',          '10.0.9'),
-    ('20260620200619_AddCompetitionResults',  '10.0.9'),
-    ('20260620203931_AddLogoUrlAndResults',   '10.0.9'),
-    ('20260620205857_RemoveParticipantes',    '10.0.9'),
-    ('20260621183346_AddChampionships',       '10.0.9')
+    ('20260726015432_InitialCreate', '10.0.9')
 ON CONFLICT ("MigrationId") DO NOTHING;

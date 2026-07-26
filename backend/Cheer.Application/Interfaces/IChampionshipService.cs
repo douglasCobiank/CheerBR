@@ -7,6 +7,7 @@ namespace Cheer.Application.Interfaces
     public interface IChampionshipService
     {
         Task<IEnumerable<ChampionshipDto>> GetAllAsync();
+        Task<ChampionshipDto?> GetByIdAsync(string id);
         Task<ChampionshipDto> CreateAsync(CreateChampionshipDto dto);
         Task UpdateAsync(string id, CreateChampionshipDto dto);
         Task DeleteAsync(string id);
